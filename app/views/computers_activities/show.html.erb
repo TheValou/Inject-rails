@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @computers_activity.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @computers_activity.description %>
+</p>
+
+<%= link_to 'Edit', edit_computers_activity_path(@computers_activity) %> |
+<%= link_to 'Back', computers_activities_path %>

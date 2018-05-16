@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @computers_chipset.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @computers_chipset.description %>
+</p>
+
+<%= link_to 'Edit', edit_computers_chipset_path(@computers_chipset) %> |
+<%= link_to 'Back', computers_chipsets_path %>

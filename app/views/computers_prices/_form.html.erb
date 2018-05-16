@@ -1,0 +1,42 @@
+<%= form_with(model: computers_price, local: true) do |form| %>
+  <% if computers_price.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(computers_price.errors.count, "error") %> prohibited this computers_price from being saved:</h2>
+
+      <ul>
+      <% computers_price.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :computerId %>
+    <%= form.number_field :computerId, id: :computers_price_computerId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :traderId %>
+    <%= form.number_field :traderId, id: :computers_price_traderId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :pricing %>
+    <%= form.number_field :pricing, id: :computers_price_pricing %>
+  </div>
+
+  <div class="field">
+    <%= form.label :url %>
+    <%= form.text_field :url, id: :computers_price_url %>
+  </div>
+
+  <div class="field">
+    <%= form.label :createdat %>
+    <%= form.datetime_select :createdat, id: :computers_price_createdat %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

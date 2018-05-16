@@ -1,0 +1,2 @@
+class SequelizeMetum < ApplicationRecord
+end

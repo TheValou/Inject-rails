@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  activityId: 1
+  quest: MyString
+  domain: MyString
+  createdat: 2018-05-15 13:25:56
+  updatedat: 2018-05-15 13:25:56
+
+two:
+  activityId: 1
+  quest: MyString
+  domain: MyString
+  createdat: 2018-05-15 13:25:56
+  updatedat: 2018-05-15 13:25:56

@@ -1,0 +1,55 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  osid: 1
+  keyboardid: 1
+  cpuid: 1
+  screenId: 1
+  gpuid: 1
+  activityid: 1
+  chipsetid: 1
+  picture: MyString
+  designation: MyString
+  model: MyString
+  connector_available: MyString
+  weight: MyString
+  length: MyString
+  width: MyString
+  height: MyString
+  memory_size: MyString
+  memory_type: MyString
+  memory_max_size: MyString
+  storage_size: MyString
+  storage_type: MyString
+  network: MyString
+  webcam: false
+  active: false
+  createdat: 2018-05-14 14:25:43
+  updatedat: 2018-05-14 14:25:43
+
+two:
+  osid: 1
+  keyboardid: 1
+  cpuid: 1
+  screenId: 1
+  gpuid: 1
+  activityid: 1
+  chipsetid: 1
+  picture: MyString
+  designation: MyString
+  model: MyString
+  connector_available: MyString
+  weight: MyString
+  length: MyString
+  width: MyString
+  height: MyString
+  memory_size: MyString
+  memory_type: MyString
+  memory_max_size: MyString
+  storage_size: MyString
+  storage_type: MyString
+  network: MyString
+  webcam: false
+  active: false
+  createdat: 2018-05-14 14:25:43
+  updatedat: 2018-05-14 14:25:43

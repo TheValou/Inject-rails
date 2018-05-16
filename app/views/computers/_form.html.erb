@@ -1,0 +1,142 @@
+<%= form_with(model: computer, local: true) do |form| %>
+  <% if computer.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(computer.errors.count, "error") %> prohibited this computer from being saved:</h2>
+
+      <ul>
+      <% computer.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :osid %>
+    <%= form.number_field :osid, id: :computer_osid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :keyboardid %>
+    <%= form.number_field :keyboardid, id: :computer_keyboardid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :cpuid %>
+    <%= form.number_field :cpuid, id: :computer_cpuid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :screenId %>
+    <%= form.number_field :screenId, id: :computer_screenId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :gpuid %>
+    <%= form.number_field :gpuid, id: :computer_gpuid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :activityid %>
+    <%= form.number_field :activityid, id: :computer_activityid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :chipsetid %>
+    <%= form.number_field :chipsetid, id: :computer_chipsetid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :picture %>
+    <%= form.text_field :picture, id: :computer_picture %>
+  </div>
+
+  <div class="field">
+    <%= form.label :designation %>
+    <%= form.text_field :designation, id: :computer_designation %>
+  </div>
+
+  <div class="field">
+    <%= form.label :model %>
+    <%= form.text_field :model, id: :computer_model %>
+  </div>
+
+  <div class="field">
+    <%= form.label :connector_available %>
+    <%= form.text_field :connector_available, id: :computer_connector_available %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weight %>
+    <%= form.text_field :weight, id: :computer_weight %>
+  </div>
+
+  <div class="field">
+    <%= form.label :length %>
+    <%= form.text_field :length, id: :computer_length %>
+  </div>
+
+  <div class="field">
+    <%= form.label :width %>
+    <%= form.text_field :width, id: :computer_width %>
+  </div>
+
+  <div class="field">
+    <%= form.label :height %>
+    <%= form.text_field :height, id: :computer_height %>
+  </div>
+
+  <div class="field">
+    <%= form.label :memory_size %>
+    <%= form.text_field :memory_size, id: :computer_memory_size %>
+  </div>
+
+  <div class="field">
+    <%= form.label :memory_type %>
+    <%= form.text_field :memory_type, id: :computer_memory_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :memory_max_size %>
+    <%= form.text_field :memory_max_size, id: :computer_memory_max_size %>
+  </div>
+
+  <div class="field">
+    <%= form.label :storage_size %>
+    <%= form.text_field :storage_size, id: :computer_storage_size %>
+  </div>
+
+  <div class="field">
+    <%= form.label :storage_type %>
+    <%= form.text_field :storage_type, id: :computer_storage_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :network %>
+    <%= form.text_field :network, id: :computer_network %>
+  </div>
+
+  <div class="field">
+    <%= form.label :webcam %>
+    <%= form.check_box :webcam, id: :computer_webcam %>
+  </div>
+
+  <div class="field">
+    <%= form.label :active %>
+    <%= form.check_box :active, id: :computer_active %>
+  </div>
+
+  <div class="field">
+    <%= form.label :createdat %>
+    <%= form.datetime_select :createdat, id: :computer_createdat %>
+  </div>
+
+  <div class="field">
+    <%= form.label :updatedat %>
+    <%= form.datetime_select :updatedat, id: :computer_updatedat %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

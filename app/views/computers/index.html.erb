@@ -1,0 +1,71 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Computers</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Osid</th>
+      <th>Cpuid</th>
+      <th>Gpuid</th>
+      <th>Activityid</th>
+      <th>Chipsetid</th>
+      <th>Picture</th>
+      <th>Designation</th>
+      <th>Model</th>
+      <th>Connector available</th>
+      <th>Weight</th>
+      <th>Length</th>
+      <th>Width</th>
+      <th>Height</th>
+      <th>Memory size</th>
+      <th>Memory type</th>
+      <th>Memory max size</th>
+      <th>Storage size</th>
+      <th>Storage type</th>
+      <th>Network</th>
+      <th>Webcam</th>
+      <th>Active</th>
+      <th>Createdat</th>
+      <th>Updatedat</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @computers.each do |computer| %>
+    <tr>
+      <td><%= computer.osid %></td>
+      <td><%= ComputersCpu.find(computer.cpuid).name %></td>
+      <td><%= computer.gpuid %></td>
+      <td><%= computer.activityid %></td>
+      <td><%= computer.chipsetid %></td>
+      <td><%= computer.picture %></td>
+      <td><%= computer.designation %></td>
+      <td><%= computer.model %></td>
+      <td><%= computer.connector_available %></td>
+      <td><%= computer.weight %></td>
+      <td><%= computer.length %></td>
+      <td><%= computer.width %></td>
+      <td><%= computer.height %></td>
+      <td><%= computer.memory_size %></td>
+      <td><%= computer.memory_type %></td>
+      <td><%= computer.memory_max_size %></td>
+      <td><%= computer.storage_size %></td>
+      <td><%= computer.storage_type %></td>
+      <td><%= computer.network %></td>
+      <td><%= computer.webcam %></td>
+      <td><%= computer.active %></td>
+      <td><%= computer.created_at %></td>
+      <td><%= computer.updated_at %></td>
+      <td><%= link_to 'Show', computer %></td>
+      <td><%= link_to 'Edit', edit_computer_path(computer) %></td>
+      <td><%= link_to 'Destroy', computer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Computer', new_computer_path %>

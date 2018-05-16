@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @computers_screen.type %>
+</p>
+
+<p>
+  <strong>Resolution:</strong>
+  <%= @computers_screen.resolution %>
+</p>
+
+<p>
+  <strong>Size:</strong>
+  <%= @computers_screen.size %>
+</p>
+
+<p>
+  <strong>Refresh rate:</strong>
+  <%= @computers_screen.refresh_rate %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @computers_screen.description %>
+</p>
+
+<%= link_to 'Edit', edit_computers_screen_path(@computers_screen) %> |
+<%= link_to 'Back', computers_screens_path %>

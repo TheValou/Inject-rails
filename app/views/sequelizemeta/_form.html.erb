@@ -1,0 +1,552 @@
+<%= form_with(model: sequelizemetum, local: true) do |form| %>
+  <% if sequelizemetum.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(sequelizemetum.errors.count, "error") %> prohibited this sequelizemetum from being saved:</h2>
+
+      <ul>
+      <% sequelizemetum.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :active %>
+    <%= form.check_box :active, id: :sequelizemetum_active %>
+  </div>
+
+  <div class="field">
+    <%= form.label :active %>
+    <%= form.check_box :active, id: :sequelizemetum_active %>
+  </div>
+
+  <div class="field">
+    <%= form.label :activityid %>
+    <%= form.number_field :activityid, id: :sequelizemetum_activityid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :activityId %>
+    <%= form.number_field :activityId, id: :sequelizemetum_activityId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :authId %>
+    <%= form.number_field :authId, id: :sequelizemetum_authId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :chipsetid %>
+    <%= form.number_field :chipsetid, id: :sequelizemetum_chipsetid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :computerId %>
+    <%= form.number_field :computerId, id: :sequelizemetum_computerId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :connector_available %>
+    <%= form.text_field :connector_available, id: :sequelizemetum_connector_available %>
+  </div>
+
+  <div class="field">
+    <%= form.label :cpuid %>
+    <%= form.number_field :cpuid, id: :sequelizemetum_cpuid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :createdat %>
+    <%= form.datetime_select :createdat, id: :sequelizemetum_createdat %>
+  </div>
+
+  <div class="field">
+    <%= form.label :with %>
+    <%= form.text_field :with, id: :sequelizemetum_with %>
+  </div>
+
+  <div class="field">
+    <%= form.label :time %>
+    <%= form.text_field :time, id: :sequelizemetum_time %>
+  </div>
+
+  <div class="field">
+    <%= form.label :zone %>
+    <%= form.text_field :zone, id: :sequelizemetum_zone %>
+  </div>
+
+  <div class="field">
+    <%= form.label :createdat %>
+    <%= form.datetime_select :createdat, id: :sequelizemetum_createdat %>
+  </div>
+
+  <div class="field">
+    <%= form.label :with %>
+    <%= form.text_field :with, id: :sequelizemetum_with %>
+  </div>
+
+  <div class="field">
+    <%= form.label :time %>
+    <%= form.text_field :time, id: :sequelizemetum_time %>
+  </div>
+
+  <div class="field">
+    <%= form.label :zone %>
+    <%= form.text_field :zone, id: :sequelizemetum_zone %>
+  </div>
+
+  <div class="field">
+    <%= form.label :createdat %>
+    <%= form.datetime_select :createdat, id: :sequelizemetum_createdat %>
+  </div>
+
+  <div class="field">
+    <%= form.label :with %>
+    <%= form.text_field :with, id: :sequelizemetum_with %>
+  </div>
+
+  <div class="field">
+    <%= form.label :time %>
+    <%= form.text_field :time, id: :sequelizemetum_time %>
+  </div>
+
+  <div class="field">
+    <%= form.label :zone %>
+    <%= form.text_field :zone, id: :sequelizemetum_zone %>
+  </div>
+
+  <div class="field">
+    <%= form.label :createdat %>
+    <%= form.datetime_select :createdat, id: :sequelizemetum_createdat %>
+  </div>
+
+  <div class="field">
+    <%= form.label :with %>
+    <%= form.text_field :with, id: :sequelizemetum_with %>
+  </div>
+
+  <div class="field">
+    <%= form.label :time %>
+    <%= form.text_field :time, id: :sequelizemetum_time %>
+  </div>
+
+  <div class="field">
+    <%= form.label :zone %>
+    <%= form.text_field :zone, id: :sequelizemetum_zone %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :sequelizemetum_description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :designation %>
+    <%= form.text_field :designation, id: :sequelizemetum_designation %>
+  </div>
+
+  <div class="field">
+    <%= form.label :domain %>
+    <%= form.text_field :domain, id: :sequelizemetum_domain %>
+  </div>
+
+  <div class="field">
+    <%= form.label :email %>
+    <%= form.text_field :email, id: :sequelizemetum_email %>
+  </div>
+
+  <div class="field">
+    <%= form.label :firstname %>
+    <%= form.text_field :firstname, id: :sequelizemetum_firstname %>
+  </div>
+
+  <div class="field">
+    <%= form.label :gpuid %>
+    <%= form.number_field :gpuid, id: :sequelizemetum_gpuid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :height %>
+    <%= form.text_field :height, id: :sequelizemetum_height %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :id %>
+    <%= form.number_field :id, id: :sequelizemetum_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :indice %>
+    <%= form.text_field :indice, id: :sequelizemetum_indice %>
+  </div>
+
+  <div class="field">
+    <%= form.label :keyboardid %>
+    <%= form.number_field :keyboardid, id: :sequelizemetum_keyboardid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :lastname %>
+    <%= form.text_field :lastname, id: :sequelizemetum_lastname %>
+  </div>
+
+  <div class="field">
+    <%= form.label :length %>
+    <%= form.text_field :length, id: :sequelizemetum_length %>
+  </div>
+
+  <div class="field">
+    <%= form.label :memory_max_size %>
+    <%= form.text_field :memory_max_size, id: :sequelizemetum_memory_max_size %>
+  </div>
+
+  <div class="field">
+    <%= form.label :memory_size %>
+    <%= form.text_field :memory_size, id: :sequelizemetum_memory_size %>
+  </div>
+
+  <div class="field">
+    <%= form.label :memory_type %>
+    <%= form.text_field :memory_type, id: :sequelizemetum_memory_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :model %>
+    <%= form.text_field :model, id: :sequelizemetum_model %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :sequelizemetum_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :network %>
+    <%= form.text_field :network, id: :sequelizemetum_network %>
+  </div>
+
+  <div class="field">
+    <%= form.label :osid %>
+    <%= form.number_field :osid, id: :sequelizemetum_osid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :password %>
+    <%= form.text_field :password, id: :sequelizemetum_password %>
+  </div>
+
+  <div class="field">
+    <%= form.label :picture %>
+    <%= form.text_field :picture, id: :sequelizemetum_picture %>
+  </div>
+
+  <div class="field">
+    <%= form.label :pricing %>
+    <%= form.number_field :pricing, id: :sequelizemetum_pricing %>
+  </div>
+
+  <div class="field">
+    <%= form.label :quest %>
+    <%= form.text_field :quest, id: :sequelizemetum_quest %>
+  </div>
+
+  <div class="field">
+    <%= form.label :questId %>
+    <%= form.number_field :questId, id: :sequelizemetum_questId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :refresh_rate %>
+    <%= form.number_field :refresh_rate, id: :sequelizemetum_refresh_rate %>
+  </div>
+
+  <div class="field">
+    <%= form.label :resolution %>
+    <%= form.text_field :resolution, id: :sequelizemetum_resolution %>
+  </div>
+
+  <div class="field">
+    <%= form.label :resp %>
+    <%= form.text_field :resp, id: :sequelizemetum_resp %>
+  </div>
+
+  <div class="field">
+    <%= form.label :roleId %>
+    <%= form.number_field :roleId, id: :sequelizemetum_roleId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :screenId %>
+    <%= form.number_field :screenId, id: :sequelizemetum_screenId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :size %>
+    <%= form.text_field :size, id: :sequelizemetum_size %>
+  </div>
+
+  <div class="field">
+    <%= form.label :storage_size %>
+    <%= form.text_field :storage_size, id: :sequelizemetum_storage_size %>
+  </div>
+
+  <div class="field">
+    <%= form.label :storage_type %>
+    <%= form.text_field :storage_type, id: :sequelizemetum_storage_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :traderId %>
+    <%= form.number_field :traderId, id: :sequelizemetum_traderId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :type %>
+    <%= form.text_field :type, id: :sequelizemetum_type %>
+  </div>
+
+  <div class="field">
+    <%= form.label :updatedat %>
+    <%= form.datetime_select :updatedat, id: :sequelizemetum_updatedat %>
+  </div>
+
+  <div class="field">
+    <%= form.label :with %>
+    <%= form.text_field :with, id: :sequelizemetum_with %>
+  </div>
+
+  <div class="field">
+    <%= form.label :time %>
+    <%= form.text_field :time, id: :sequelizemetum_time %>
+  </div>
+
+  <div class="field">
+    <%= form.label :zone %>
+    <%= form.text_field :zone, id: :sequelizemetum_zone %>
+  </div>
+
+  <div class="field">
+    <%= form.label :updatedat %>
+    <%= form.datetime_select :updatedat, id: :sequelizemetum_updatedat %>
+  </div>
+
+  <div class="field">
+    <%= form.label :with %>
+    <%= form.text_field :with, id: :sequelizemetum_with %>
+  </div>
+
+  <div class="field">
+    <%= form.label :time %>
+    <%= form.text_field :time, id: :sequelizemetum_time %>
+  </div>
+
+  <div class="field">
+    <%= form.label :zone %>
+    <%= form.text_field :zone, id: :sequelizemetum_zone %>
+  </div>
+
+  <div class="field">
+    <%= form.label :updatedat %>
+    <%= form.datetime_select :updatedat, id: :sequelizemetum_updatedat %>
+  </div>
+
+  <div class="field">
+    <%= form.label :with %>
+    <%= form.text_field :with, id: :sequelizemetum_with %>
+  </div>
+
+  <div class="field">
+    <%= form.label :time %>
+    <%= form.text_field :time, id: :sequelizemetum_time %>
+  </div>
+
+  <div class="field">
+    <%= form.label :zone %>
+    <%= form.text_field :zone, id: :sequelizemetum_zone %>
+  </div>
+
+  <div class="field">
+    <%= form.label :url %>
+    <%= form.text_field :url, id: :sequelizemetum_url %>
+  </div>
+
+  <div class="field">
+    <%= form.label :webcam %>
+    <%= form.check_box :webcam, id: :sequelizemetum_webcam %>
+  </div>
+
+  <div class="field">
+    <%= form.label :weight %>
+    <%= form.text_field :weight, id: :sequelizemetum_weight %>
+  </div>
+
+  <div class="field">
+    <%= form.label :width %>
+    <%= form.text_field :width, id: :sequelizemetum_width %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

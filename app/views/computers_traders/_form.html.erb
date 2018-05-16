@@ -1,0 +1,27 @@
+<%= form_with(model: computers_trader, local: true) do |form| %>
+  <% if computers_trader.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(computers_trader.errors.count, "error") %> prohibited this computers_trader from being saved:</h2>
+
+      <ul>
+      <% computers_trader.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :computers_trader_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description, id: :computers_trader_description %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Computerid:</strong>
+  <%= @computers_price.computerId %>
+</p>
+
+<p>
+  <strong>Traderid:</strong>
+  <%= @computers_price.traderId %>
+</p>
+
+<p>
+  <strong>Pricing:</strong>
+  <%= @computers_price.pricing %>
+</p>
+
+<p>
+  <strong>Url:</strong>
+  <%= @computers_price.url %>
+</p>
+
+<p>
+  <strong>Createdat:</strong>
+  <%= @computers_price.createdat %>
+</p>
+
+<%= link_to 'Edit', edit_computers_price_path(@computers_price) %> |
+<%= link_to 'Back', computers_prices_path %>

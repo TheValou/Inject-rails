@@ -1,0 +1,2 @@
+class ComputersQuestsResp < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+class ComputersScreen < ApplicationRecord
+end

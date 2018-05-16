@@ -1,0 +1,2 @@
+class ComputersPrice < ApplicationRecord
+end

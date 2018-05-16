@@ -1,0 +1,42 @@
+<%= form_with(model: computers_quest, local: true) do |form| %>
+  <% if computers_quest.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(computers_quest.errors.count, "error") %> prohibited this computers_quest from being saved:</h2>
+
+      <ul>
+      <% computers_quest.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :activityId %>
+    <%= form.number_field :activityId, id: :computers_quest_activityId %>
+  </div>
+
+  <div class="field">
+    <%= form.label :quest %>
+    <%= form.text_field :quest, id: :computers_quest_quest %>
+  </div>
+
+  <div class="field">
+    <%= form.label :domain %>
+    <%= form.text_field :domain, id: :computers_quest_domain %>
+  </div>
+
+  <div class="field">
+    <%= form.label :createdat %>
+    <%= form.datetime_select :createdat, id: :computers_quest_createdat %>
+  </div>
+
+  <div class="field">
+    <%= form.label :updatedat %>
+    <%= form.datetime_select :updatedat, id: :computers_quest_updatedat %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

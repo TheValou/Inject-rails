@@ -1,0 +1,2 @@
+class ComputersTrader < ApplicationRecord
+end

@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Activityid:</strong>
+  <%= @computers_quest.activityId %>
+</p>
+
+<p>
+  <strong>Quest:</strong>
+  <%= @computers_quest.quest %>
+</p>
+
+<p>
+  <strong>Domain:</strong>
+  <%= @computers_quest.domain %>
+</p>
+
+<p>
+  <strong>Createdat:</strong>
+  <%= @computers_quest.createdat %>
+</p>
+
+<p>
+  <strong>Updatedat:</strong>
+  <%= @computers_quest.updatedat %>
+</p>
+
+<%= link_to 'Edit', edit_computers_quest_path(@computers_quest) %> |
+<%= link_to 'Back', computers_quests_path %>

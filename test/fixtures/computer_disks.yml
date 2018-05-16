@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  type: 
+  size: 
+  interface: MyString
+
+two:
+  type: 
+  size: 
+  interface: MyString

@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @computers_keyboard.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @computers_keyboard.description %>
+</p>
+
+<%= link_to 'Edit', edit_computers_keyboard_path(@computers_keyboard) %> |
+<%= link_to 'Back', computers_keyboards_path %>

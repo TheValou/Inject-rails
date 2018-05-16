@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Sequelize Meta</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @sequelize_meta.each do |sequelize_metum| %>
+      <tr>
+        <td><%= link_to 'Show', sequelize_metum %></td>
+        <td><%= link_to 'Edit', edit_sequelize_metum_path(sequelize_metum) %></td>
+        <td><%= link_to 'Destroy', sequelize_metum, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Sequelize Metum', new_sequelize_metum_path %>

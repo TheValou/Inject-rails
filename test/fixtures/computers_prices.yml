@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  computerId: 1
+  traderId: 1
+  pricing: 1
+  url: MyString
+  createdat: 2018-05-15 13:25:36
+
+two:
+  computerId: 1
+  traderId: 1
+  pricing: 1
+  url: MyString
+  createdat: 2018-05-15 13:25:36

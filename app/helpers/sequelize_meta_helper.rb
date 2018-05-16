@@ -1,0 +1,2 @@
+module SequelizeMetaHelper
+end

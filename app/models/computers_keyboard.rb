@@ -1,0 +1,2 @@
+class ComputersKeyboard < ApplicationRecord
+end

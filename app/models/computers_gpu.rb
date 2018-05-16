@@ -1,0 +1,2 @@
+class ComputersGpu < ApplicationRecord
+end

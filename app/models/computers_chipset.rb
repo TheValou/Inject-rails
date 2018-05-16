@@ -1,0 +1,2 @@
+class ComputersChipset < ApplicationRecord
+end

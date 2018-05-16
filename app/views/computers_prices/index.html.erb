@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Computers Prices</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Computerid</th>
+      <th>Traderid</th>
+      <th>Pricing</th>
+      <th>Url</th>
+      <th>Createdat</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @computers_prices.each do |computers_price| %>
+      <tr>
+        <td><%= computers_price.computerId %></td>
+        <td><%= computers_price.traderId %></td>
+        <td><%= computers_price.pricing %></td>
+        <td><%= computers_price.url %></td>
+        <td><%= computers_price.createdat %></td>
+        <td><%= link_to 'Show', computers_price %></td>
+        <td><%= link_to 'Edit', edit_computers_price_path(computers_price) %></td>
+        <td><%= link_to 'Destroy', computers_price, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Computers Price', new_computers_price_path %>

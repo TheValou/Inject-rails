@@ -1,0 +1,219 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  active: false
+  active: false
+  activityid: 1
+  activityId: 1
+  authId: 1
+  chipsetid: 1
+  computerId: 1
+  connector_available: MyString
+  cpuid: 1
+  createdat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  createdat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  createdat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  createdat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  designation: MyString
+  domain: MyString
+  email: MyString
+  firstname: MyString
+  gpuid: 1
+  height: MyString
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  indice: MyString
+  keyboardid: 1
+  lastname: MyString
+  length: MyString
+  memory_max_size: MyString
+  memory_size: MyString
+  memory_type: MyString
+  model: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  network: MyString
+  osid: 1
+  password: MyString
+  picture: MyString
+  pricing: 1
+  quest: MyString
+  questId: 1
+  refresh_rate: 1
+  resolution: MyString
+  resp: MyString
+  roleId: 1
+  screenId: 1
+  size: MyString
+  storage_size: MyString
+  storage_type: MyString
+  traderId: 1
+  type: 
+  updatedat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  updatedat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  updatedat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  url: MyString
+  webcam: false
+  weight: MyString
+  width: MyString
+
+two:
+  active: false
+  active: false
+  activityid: 1
+  activityId: 1
+  authId: 1
+  chipsetid: 1
+  computerId: 1
+  connector_available: MyString
+  cpuid: 1
+  createdat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  createdat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  createdat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  createdat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  description: MyString
+  designation: MyString
+  domain: MyString
+  email: MyString
+  firstname: MyString
+  gpuid: 1
+  height: MyString
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  id: 1
+  indice: MyString
+  keyboardid: 1
+  lastname: MyString
+  length: MyString
+  memory_max_size: MyString
+  memory_size: MyString
+  memory_type: MyString
+  model: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  name: MyString
+  network: MyString
+  osid: 1
+  password: MyString
+  picture: MyString
+  pricing: 1
+  quest: MyString
+  questId: 1
+  refresh_rate: 1
+  resolution: MyString
+  resp: MyString
+  roleId: 1
+  screenId: 1
+  size: MyString
+  storage_size: MyString
+  storage_type: MyString
+  traderId: 1
+  type: 
+  updatedat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  updatedat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  updatedat: 2018-05-14 14:01:50
+  with: MyString
+  time: MyString
+  zone: MyString
+  url: MyString
+  webcam: false
+  weight: MyString
+  width: MyString

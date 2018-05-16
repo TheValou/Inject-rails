@@ -1,0 +1,37 @@
+#default: &default
+ # adapter: postgresql
+ # pool: 5
+  #timeout: 5000
+
+development:
+  adapter: postgresql
+  encoding: unicode
+  database: needpc
+  host: 127.0.0.1
+  pool: 5
+  username: valentin
+  password: wurfl
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: needpc
+  host: 127.0.0.1
+  pool: 5
+  username: valentin
+  password: wurfl
+
+
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: needpc
+  host: 127.0.0.1
+  pool: 5
+  username: valentin
+  password: wurfl
+

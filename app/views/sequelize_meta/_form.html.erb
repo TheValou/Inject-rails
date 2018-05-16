@@ -1,0 +1,17 @@
+<%= form_with(model: sequelize_metum, local: true) do |form| %>
+  <% if sequelize_metum.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(sequelize_metum.errors.count, "error") %> prohibited this sequelize_metum from being saved:</h2>
+
+      <ul>
+      <% sequelize_metum.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,145 @@
+class TopAchatScrap #< MainScraper::Scrap
+
+  DOMAIN = "https://www.topachat.com"
+  URL = "#{DOMAIN}/pages/produits_cat_est_ordinateurs_puis_rubrique_est_wport.html"
+
+
+  def self.explore 
+    agent = Mechanize.new
+    page = agent.get(URL)
+
+    loop do  
+      page.search('article.grille-produit').each do |x|
+        p x.at('a')[:href]
+        # scrap_pc(x[:href])
+      end
+      next_link = page.search('a').map{|x| x if x.text == "suivant"}.compact.first[:href] if page.search('a').map{|x| x if x.text == "suivant"}.compact.length > 0
+      break if next_link == ''
+      page = agent.get(next_link)
+    end
+
+
+  end
+
+
+  # On appelle la méthode pour récupérer les infos sur un PC 
+  def self.scrap_pc(url)
+    begin
+      page = Mechanize.new.get(url)
+    rescue Exception=>e
+    end
+
+    pc = {}
+    hash_main = {}
+    hash_os = {}
+    hash_cpu = {}
+    hash_memory = {}
+    hash_disk = {}
+    hash_screen = {}
+    hash_keyboard = {}
+    hash_network = {}
+    hash_graphics = {}
+
+    page.search('table#productParametersList tr.odd').each do |x|
+      hash_main[x.search('td.productParameter').text.gsub(/\s+/,' ').strip] = x.search('td.rowOdd').text.gsub(/\s+/,' ').strip
+    end
+    page.search('table#productParametersList tr.even').each do |x|
+      hash_main[x.search('td.productParameter').text.gsub(/\s+/,' ').strip] = x.search('td.rowEven').text.gsub(/\s+/,' ').strip
+    end
+
+    pc[:url] = url
+    pc[:price] = Integer(page.search('span.price.sale').text.gsub(/[[:space:]]/, '').to_i)
+    pc[:model] = page.search('span.fn.designation_courte').text
+    pc[:brand] = extract_from_hash(hash_main, "Marque")
+    pc[:model] = extract_from_hash(hash_main, "Modèle")&
+
+
+    # Informations sur le système d'exploitation
+    hash_os[:os_name] = extract_from_hash(hash_main, "Famille OS")
+    hash_os[:os_family] = extract_from_hash(hash_main, "Système d'exploitation")
+    hash_os[:os_included] = extract_from_hash(hash_main, "Système d'exploitation fourni") == "Oui" ? true : false
+    
+
+    # Informations sur le processeur
+    hash_cpu[:cpu_name] = extract_from_hash(hash_main, "Type de processeur")
+    hash_cpu[:cpu_model] = extract_from_hash(hash_main, "Processeur")
+    hash_cpu[:cpu_brand] = extract_from_hash(hash_main, "Marque processeur")
+    hash_cpu[:cpu_frequency] = extract_from_hash(hash_main, "Fréquence CPU")  
+
+
+    # Informations sur la mémoire
+    hash_memory[:memory_strips] = extract_from_hash(hash_main, "Nombre de barrettes")
+    hash_memory[:memory_size] = extract_from_hash(hash_main, "Taille de la mémoire")
+    hash_memory[:memory_max_size] = extract_from_hash(hash_main, "Taille de mémoire Max")
+    hash_memory[:memory_type] = extract_from_hash(hash_main, "Type de mémoire")
+
+
+    # Informations sur le(s) disque(s) dur(s)
+    hash_disk[:disk_name] = extract_from_hash(hash_main, "Configuration disque(s)")
+    hash_disk[:disk_main] = extract_from_hash(hash_main, "Disque dur")
+    hash_disk[:disk_secondary] = extract_from_hash(hash_main, "Disque secondaire")
+    hash_disk[:disk_secondary] = "Non" if hash_disk[:disk_secondary].nil?
+    hash_disk[:disk_number] = extract_from_hash(hash_main, "Nombre de disques")
+    hash_disk[:disk_number_max] = extract_from_hash(hash_main, "Nombre de disques max")
+    hash_disk[:disk_type] = extract_from_hash(hash_main, "Type de Disque")
+    hash_disk[:disk_interface] = extract_from_hash(hash_main, "Interface du disque dur")
+
+
+    # Informations sur l'écran
+    hash_screen[:screen_type] = extract_from_hash(hash_main, "Type d'écran")
+    hash_screen[:screen_resolution] = extract_from_hash(hash_main, "Résolution Max")
+    hash_screen[:screen_refresh_rate] = extract_from_hash(hash_main, "Taux de rafraîchissement")
+    hash_screen[:screen_size] = extract_from_hash(hash_main, "Taille de l'écran")
+    hash_screen[:screen_format] = extract_from_hash(hash_main, "Format de l'écran")
+
+
+    # Informations sur le clavier
+    hash_keyboard[:keyboard_type] = extract_from_hash(hash_main, "Norme du clavier")
+    hash_keyboard[:keyboard_numpad] = extract_from_hash(hash_main, "Pavé numérique") == "Oui" ? true : false
+    hash_keyboard[:keyboard_light] = extract_from_hash(hash_main, "Clavier rétroéclairé") == "Oui" ? true : false
+
+
+    # Informations sur la carte réseau
+    hash_network[:network_norm] = extract_from_hash(hash_main, "Norme(s) réseau")
+
+
+    # Informations sur la carte graphique
+    hash_graphics[:gpu_name] = extract_from_hash(hash_main, "Chipset graphique")
+
+
+    #On regroupe toutes les infos dans un hash
+    pc[:additionnal_informations] = hash_main
+    pc[:os] = hash_os
+    pc[:cpu] = hash_cpu
+    pc[:memory] = hash_memory
+    pc[:disk] = hash_disk
+    pc[:screen] = hash_screen
+    pc[:keyboard] = hash_keyboard
+    pc[:network] = hash_network
+    pc[:gpu] = hash_graphics
+    pc[:main_photo] = page.search('div#productphoto a').first[:href]
+
+#
+# houses_to_rm = ClassifiedAd.where(scrap_name: "iad_france", active: true).pluck(:house_id).compact.uniq
+
+p pc
+final = Computer.to_pc(pc)
+# c = ComputersPrice.where(url: pc[:url])
+Computer.create(final)
+    # Retour du PC
+    #pc.to_json
+
+  end
+
+
+  # Extraire une valeur d'un hash
+  def self.extract_from_hash hash, key
+    ret_value = ''
+    if key.size > 0 && hash[key]
+      ret_value = hash[key]
+      hash.delete(key)
+      return ret_value
+    end
+  end
+
+end
