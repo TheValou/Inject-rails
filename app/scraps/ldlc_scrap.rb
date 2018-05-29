@@ -122,28 +122,31 @@ class LdlcScrap #< MainScraper::Scrap
 
     
     # Objet final pour le Computer
-    final = Computer.to_pc(pc)
+    begin
+      final = Computer.to_pc(pc)
 
-    cprice = ComputersPrice.where(url: pc[:url])
-    
-    if cprice.count < 1
-      pp final
-      c = Computer.create(final)
-      ComputersPrice.create(computer_id: c.id, url: pc[:url], pricing: {DateTime.now => pc[:price].to_i}, trader_id: 3, last_price: pc[:price].to_i)
+      cprice = ComputersPrice.where(url: pc[:url])
 
-    else
-      # Mise à jour du price
-      if cprice.first.pricing.to_a.last.last.to_i != pc[:price]
-        cprice.first.pricing[DateTime.now] = pc[:price]
-        cprice.first.last_price = pc[:price]
-        cprice.first.save!
+      if cprice.count < 1
+        c = Computer.create(final)
+        ComputersPrice.create(computer_id: c.id, url: pc[:url], pricing: {DateTime.now => pc[:price].to_i}, trader_id: 3, last_price: pc[:price].to_i)
+
       else
-        cprice.first.update(last_price: pc[:price]) if cprice.first.last_price != pc[:price]
+        # Mise à jour du price
+        if cprice.first.pricing.to_a.last.last.to_i != pc[:price]
+          cprice.first.pricing[DateTime.now] = pc[:price]
+          cprice.first.last_price = pc[:price]
+          cprice.first.save!
+        else
+          cprice.first.update(last_price: pc[:price]) if cprice.first.last_price != pc[:price]
+        end
+
+        cprice.first.computer.update(final)
+        # Mise à jour du PC en base
+
       end
-
-      cprice.first.computer.update(final)
-      # Mise à jour du PC en base
-
+    rescue Exception => e
+      puts e
     end
 
   end
