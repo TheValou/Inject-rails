@@ -30,7 +30,6 @@ class ComputersController < ApplicationController
 
     respond_to do |format|
       if @computer.save
-        c = ComputersPrice.create_with(computerId: @computer.id, url: pc_hash[:url], pricing: pc_hash[:price]).find_or_create_by(url: pc_hash[:url], pricing: pc_hash[:price])
 
         format.html { redirect_to @computer, notice: 'Computer was successfully created.' }
         format.json { render :show, status: :created, location: @computer }
@@ -152,6 +151,7 @@ class ComputersController < ApplicationController
   # DELETE /computers/1
   # DELETE /computers/1.json
   def destroy
+    ComputersPrice.where(computer_id: @computer.id).delete_all
     @computer.destroy
     respond_to do |format|
       format.html { redirect_to computers_url, notice: 'Computer was successfully destroyed.' }

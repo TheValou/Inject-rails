@@ -1,2 +1,2 @@
-class ComputersO < ApplicationRecord
+class ComputersO < ApplicationRecord	
 end

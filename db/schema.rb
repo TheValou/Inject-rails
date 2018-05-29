@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180516081751) do
+ActiveRecord::Schema.define(version: 20180524131513) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "SequelizeMeta", primary_key: "name", id: :string, limit: 255, force: :cascade do |t|
   end
@@ -27,11 +28,11 @@ ActiveRecord::Schema.define(version: 20180516081751) do
   end
 
   create_table "computers", id: :serial, force: :cascade do |t|
-    t.integer "osid", default: 1
-    t.integer "cpuid", default: 1
-    t.integer "gpuid", default: 1
-    t.integer "activityid", default: 1
-    t.integer "chipsetid", default: 1
+    t.integer "os_id", default: 1
+    t.integer "cpu_id", default: 1
+    t.integer "gpu_id", default: 1
+    t.integer "activity_id", default: 1
+    t.integer "chipset_id", default: 1
     t.string "picture", limit: 512
     t.string "designation", limit: 256
     t.string "model", limit: 256, null: false
@@ -40,29 +41,33 @@ ActiveRecord::Schema.define(version: 20180516081751) do
     t.string "length", limit: 16
     t.string "width", limit: 16
     t.string "height", limit: 16
-    t.string "memory_size", limit: 128
     t.string "memory_type", limit: 128
+    t.string "memory_size", limit: 128
     t.string "memory_max_size", limit: 128
-    t.string "storage_size", limit: 128
-    t.string "storage_type", limit: 128
-    t.string "network", limit: 128
-    t.boolean "webcam", default: true, null: false
-    t.boolean "active", default: true, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "keyboard_type"
+    t.string "keyboard_type", limit: 128
     t.boolean "keyboard_numpad"
     t.boolean "keyboard_light"
-    t.string "screen_type"
-    t.string "screen_resolution"
+    t.string "screen_type", limit: 256
+    t.string "screen_resolution", limit: 256
     t.integer "screen_refresh_rate"
     t.float "screen_size"
-    t.string "screen_format"
+    t.string "screen_format", limit: 16
+    t.string "network", limit: 128
+    t.boolean "webcam"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer "brand_id"
   end
 
   create_table "computers_activities", id: :serial, force: :cascade do |t|
     t.string "name", limit: 64, null: false
     t.string "description", limit: 512
+  end
+
+  create_table "computers_brands", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.string "description"
   end
 
   create_table "computers_chipsets", id: :serial, force: :cascade do |t|
@@ -72,11 +77,20 @@ ActiveRecord::Schema.define(version: 20180516081751) do
 
   create_table "computers_cpus", id: :serial, force: :cascade do |t|
     t.string "name", limit: 128, null: false
+    t.integer "score"
     t.string "description", limit: 512
+  end
+
+  create_table "computers_disks", id: :serial, force: :cascade do |t|
+    t.integer "computer_id", null: false
+    t.integer "size"
+    t.string "interface", limit: 1024
+    t.integer "type"
   end
 
   create_table "computers_gpus", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255, null: false
+    t.integer "score"
     t.string "description", limit: 1024
   end
 
@@ -86,23 +100,27 @@ ActiveRecord::Schema.define(version: 20180516081751) do
   end
 
   create_table "computers_prices", id: :serial, force: :cascade do |t|
-    t.integer "computerId", null: false
-    t.integer "traderId", null: false
-    t.integer "pricing", null: false
-    t.string "url", limit: 512, null: false
-    t.datetime "createdat", null: false
+    t.integer "computer_id", null: false
+    t.integer "trader_id", null: false
+    t.string "url", limit: 512
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.hstore "pricing"
+    t.integer "last_price"
+    t.index ["url"], name: "index_computers_prices_on_url", unique: true
   end
 
   create_table "computers_quests", id: :serial, force: :cascade do |t|
-    t.integer "activityId", null: false
+    t.integer "activity_id", null: false
+    t.integer "rank", null: false
     t.string "quest", limit: 512, null: false
-    t.string "domain", limit: 64, null: false
-    t.datetime "createdat", null: false
-    t.datetime "updatedat", null: false
+    t.string "domain", limit: 16
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "computers_quests_resps", id: :serial, force: :cascade do |t|
-    t.integer "questId", null: false
+    t.integer "quest_id", null: false
     t.string "resp", limit: 32, null: false
     t.string "indice", limit: 32, null: false
   end
@@ -112,37 +130,19 @@ ActiveRecord::Schema.define(version: 20180516081751) do
     t.string "description", limit: 512
   end
 
-  create_table "users", id: :serial, force: :cascade do |t|
-    t.integer "roleId"
-    t.integer "authId"
-    t.string "firstname", limit: 128, null: false
-    t.string "lastname", limit: 256, null: false
-    t.string "email", limit: 255, null: false
-    t.string "password", limit: 1024, null: false
-    t.boolean "active", default: true, null: false
-    t.datetime "createdat", null: false
-    t.datetime "updatedat", null: false
-  end
-
   create_table "users_auth", id: :serial, force: :cascade do |t|
     t.string "name", limit: 32, null: false
     t.string "description", limit: 128
   end
 
-  create_table "users_roles", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 30, null: false
-    t.string "description", limit: 50
-  end
-
-  add_foreign_key "computers", "computers_activities", column: "activityid", name: "computers_activityid_fkey"
-  add_foreign_key "computers", "computers_chipsets", column: "chipsetid", name: "computers_chipsetid_fkey"
-  add_foreign_key "computers", "computers_cpus", column: "cpuid", name: "computers_cpuid_fkey"
-  add_foreign_key "computers", "computers_gpus", column: "gpuid", name: "computers_gpuid_fkey"
-  add_foreign_key "computers", "computers_os", column: "osid", name: "computers_osid_fkey"
-  add_foreign_key "computers_prices", "computers", column: "computerId", name: "computers_prices_computerId_fkey"
-  add_foreign_key "computers_prices", "computers_traders", column: "traderId", name: "computers_prices_traderId_fkey"
-  add_foreign_key "computers_quests", "computers_activities", column: "activityId", name: "computers_quests_activityId_fkey"
-  add_foreign_key "computers_quests_resps", "computers_quests", column: "questId", name: "computers_quests_resps_questId_fkey"
-  add_foreign_key "users", "users_auth", column: "authId", name: "users_authId_fkey"
-  add_foreign_key "users", "users_roles", column: "roleId", name: "users_roleId_fkey"
+  add_foreign_key "computers", "computers_activities", column: "activity_id", name: "computers_activity_id_fkey"
+  add_foreign_key "computers", "computers_chipsets", column: "chipset_id", name: "computers_chipset_id_fkey"
+  add_foreign_key "computers", "computers_cpus", column: "cpu_id", name: "computers_cpu_id_fkey"
+  add_foreign_key "computers", "computers_gpus", column: "gpu_id", name: "computers_gpu_id_fkey"
+  add_foreign_key "computers", "computers_os", column: "os_id", name: "computers_os_id_fkey"
+  add_foreign_key "computers_disks", "computers", name: "computers_disks_computer_id_fkey"
+  add_foreign_key "computers_prices", "computers", name: "computers_prices_computer_id_fkey"
+  add_foreign_key "computers_prices", "computers_traders", column: "trader_id", name: "computers_prices_trader_id_fkey"
+  add_foreign_key "computers_quests", "computers_activities", column: "activity_id", name: "computers_quests_activity_id_fkey"
+  add_foreign_key "computers_quests_resps", "computers_quests", column: "quest_id", name: "computers_quests_resps_quest_id_fkey"
 end

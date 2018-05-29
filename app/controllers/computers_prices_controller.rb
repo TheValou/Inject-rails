@@ -69,6 +69,6 @@ class ComputersPricesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def computers_price_params
-      params.require(:computers_price).permit(:computerId, :traderId, :pricing, :url, :createdat)
+      params.require(:computers_price).permit(:computerId, :trader_id, :pricing, :url, :createdat)
     end
 end

@@ -1,23 +1,25 @@
-class TopAchatScrap #< MainScraper::Scrap
+class TopAchatScrap
 
   DOMAIN = "https://www.topachat.com"
-  URL = "#{DOMAIN}/pages/produits_cat_est_ordinateurs_puis_rubrique_est_wport.html"
+  URL = "#{DOMAIN}/pages/produits_cat_est_ordinateurs_puis_rubrique_est_wport_puis_page_est_PAGE.html"
 
 
   def self.explore 
     agent = Mechanize.new
-    page = agent.get(URL)
+    current = 1
+    page = agent.get(URL.gsub("PAGE", current.to_s))
+    p URL.gsub("PAGE", current.to_s)
 
+    number_max = page.search('nav.pagination a').map{|x| x.text.match(/...(\d+)/)[1] if x.text.match(/...(\d+)/)}.compact.last.to_i if page.search('a').map{|x| x.text.match(/...(\d+)/)[1] if x.text.match(/...(\d+)/)}.compact.length > 0
     loop do  
-      page.search('article.grille-produit').each do |x|
-        p x.at('a')[:href]
-        # scrap_pc(x[:href])
+      page.search('article.grille-produit a').each do |x|
+        ad_url = DOMAIN + x[:href]
+        scrap_pc(ad_url)
       end
-      next_link = page.search('a').map{|x| x if x.text == "suivant"}.compact.first[:href] if page.search('a').map{|x| x if x.text == "suivant"}.compact.length > 0
-      break if next_link == ''
-      page = agent.get(next_link)
+      break if current == number_max
+      current += 1
+      page = agent.get(URL.gsub("PAGE", current.to_s))
     end
-
 
   end
 
@@ -27,6 +29,7 @@ class TopAchatScrap #< MainScraper::Scrap
     begin
       page = Mechanize.new.get(url)
     rescue Exception=>e
+      p e
     end
 
     pc = {}
@@ -40,38 +43,45 @@ class TopAchatScrap #< MainScraper::Scrap
     hash_network = {}
     hash_graphics = {}
 
-    page.search('table#productParametersList tr.odd').each do |x|
-      hash_main[x.search('td.productParameter').text.gsub(/\s+/,' ').strip] = x.search('td.rowOdd').text.gsub(/\s+/,' ').strip
+    page.search('div.carac .caracLine').each do |x|
+      hash_second = {}
+      x.search('div.caracDesc b').each{|x|(hash_second[x.text.gsub(":","").strip] = x.next_sibling.text) if x.next_sibling}
+      hash_main[x.search('div.caracName').text.gsub(/\s+/,' ').gsub(":","").strip] = hash_second
     end
-    page.search('table#productParametersList tr.even').each do |x|
-      hash_main[x.search('td.productParameter').text.gsub(/\s+/,' ').strip] = x.search('td.rowEven').text.gsub(/\s+/,' ').strip
-    end
+    # page.search('table#productParametersList tr.even').each do |x|
+    #   hash_main[x.search('td.productParameter').text.gsub(/\s+/,' ').strip] = x.search('td.rowEven').text.gsub(/\s+/,' ').strip
+    # end
+
+    pp hash_main
 
     pc[:url] = url
-    pc[:price] = Integer(page.search('span.price.sale').text.gsub(/[[:space:]]/, '').to_i)
-    pc[:model] = page.search('span.fn.designation_courte').text
-    pc[:brand] = extract_from_hash(hash_main, "Marque")
-    pc[:model] = extract_from_hash(hash_main, "Modèle")&
+    pc[:price] = page.search('.priceFinal.fp44').text.gsub(/[[:space:]]/, '').to_f
+    pc[:model] = page.search('h1.fn').text
+
+    pc[:brand] = extract_from_hash(hash_main, "Marque") if hash_main["Marque"]
+    pc[:model] = extract_from_hash(hash_main, "Modèle") if hash_main["Modèle"]
 
 
-    # Informations sur le système d'exploitation
-    hash_os[:os_name] = extract_from_hash(hash_main, "Famille OS")
-    hash_os[:os_family] = extract_from_hash(hash_main, "Système d'exploitation")
-    hash_os[:os_included] = extract_from_hash(hash_main, "Système d'exploitation fourni") == "Oui" ? true : false
+    # Informations sur le système d'exploitation OK
+    hash_os[:os_name] = extract_from_hash(hash_main["Système d'exploitation"], "OS").strip
+    hash_os[:os_included] = extract_from_hash(hash_main["Système d'exploitation"], "OS") == "Sans OS" ? false : true
+    
     
 
     # Informations sur le processeur
-    hash_cpu[:cpu_name] = extract_from_hash(hash_main, "Type de processeur")
-    hash_cpu[:cpu_model] = extract_from_hash(hash_main, "Processeur")
-    hash_cpu[:cpu_brand] = extract_from_hash(hash_main, "Marque processeur")
-    hash_cpu[:cpu_frequency] = extract_from_hash(hash_main, "Fréquence CPU")  
+    hash_cpu[:cpu_name] = extract_from_hash(hash_main["Processeur"], "Type")
+    hash_cpu[:cpu_model] = extract_from_hash(hash_main["Processeur"], "Processeur")
+    hash_cpu[:cpu_brand] = extract_from_hash(hash_main["Processeur"], "Marque processeur")
+    hash_cpu[:cpu_frequency] = extract_from_hash(hash_main["Processeur"], "Fréquence")
+    #extraite et modifier dans computer  
 
 
     # Informations sur la mémoire
-    hash_memory[:memory_strips] = extract_from_hash(hash_main, "Nombre de barrettes")
-    hash_memory[:memory_size] = extract_from_hash(hash_main, "Taille de la mémoire")
-    hash_memory[:memory_max_size] = extract_from_hash(hash_main, "Taille de mémoire Max")
-    hash_memory[:memory_type] = extract_from_hash(hash_main, "Type de mémoire")
+    hash_memory[:memory_strips] = extract_from_hash(hash_main["Mémoire (RAM)"], "Nombre de barrettes")
+    hash_memory[:memory_size] = extract_from_hash(hash_main["Mémoire (RAM)"], "Taille de la mémoire")
+    hash_memory[:memory_max_size] = extract_from_hash(hash_main["Mémoire (RAM)"], "Taille de mémoire Max")
+    hash_memory[:memory_type] = extract_from_hash(hash_main["Mémoire (RAM)"], "Type")
+    #extraite et modifier dans computer  
 
 
     # Informations sur le(s) disque(s) dur(s)
@@ -117,29 +127,43 @@ class TopAchatScrap #< MainScraper::Scrap
     pc[:keyboard] = hash_keyboard
     pc[:network] = hash_network
     pc[:gpu] = hash_graphics
-    pc[:main_photo] = page.search('div#productphoto a').first[:href]
+    pc[:main_photo] = page.search('div#productphoto a').first[:href] rescue nil
 
-#
-# houses_to_rm = ClassifiedAd.where(scrap_name: "iad_france", active: true).pluck(:house_id).compact.uniq
+   # Objet final pour le Computer
+    final = Computer.to_pc(pc)
 
-p pc
-final = Computer.to_pc(pc)
-# c = ComputersPrice.where(url: pc[:url])
-Computer.create(final)
-    # Retour du PC
-    #pc.to_json
+    cprice = ComputersPrice.where(url: pc[:url])
+    
+    if cprice.count < 1
+      pp final
+      c = Computer.create(final)
+      ComputersPrice.create(computer_id: c.id, url: pc[:url], pricing: {DateTime.now => pc[:price].to_i}, trader_id: 2, last_price: pc[:price].to_i)
 
+    else
+      # Mise à jour du price
+      if cprice.first.pricing.to_a.last.last.to_i != pc[:price]
+        cprice.first.pricing[DateTime.now] = pc[:price]
+        cprice.first.last_price = pc[:price]
+        cprice.first.save!
+      else
+        cprice.first.update(last_price: pc[:price]) if cprice.first.last_price != pc[:price]
+      end
+
+      cprice.first.computer.update(final)
+      # Mise à jour du PC en base
+
+    end
   end
 
 
   # Extraire une valeur d'un hash
-  def self.extract_from_hash hash, key
+  def self.extract_from_hash haash, key
     ret_value = ''
-    if key.size > 0 && hash[key]
-      ret_value = hash[key]
-      hash.delete(key)
-      return ret_value
+    if key.length > 0 && haash && haash[key]
+      ret_value = haash[key]
+      haash.delete(key)
     end
+    return ret_value
   end
 
 end

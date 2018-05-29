@@ -1,0 +1,2 @@
+class ComputersBrand < ApplicationRecord
+end

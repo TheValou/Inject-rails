@@ -1,2 +1,0 @@
-class ComputersScreen < ApplicationRecord
-end

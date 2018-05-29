@@ -13,7 +13,7 @@ class LdlcScrap #< MainScraper::Scrap
         scrap_pc(x[:href])
       end
       next_link = page.search('link').map{|x| x if x[:rel] == "next"}.compact.first[:href] if page.search('link').map{|x| x if x[:rel] == "next"}.compact.length > 0
-      break if next_link == ''
+      break if next_link == '' || next_link.nil?
       page = agent.get(next_link)
     end
 
@@ -114,14 +114,38 @@ class LdlcScrap #< MainScraper::Scrap
     pc[:disk] = hash_disk
     pc[:screen] = hash_screen
     pc[:keyboard] = hash_keyboard
+
     pc[:network] = hash_network
     pc[:gpu] = hash_graphics
+    pc[:webcam] = (extract_from_hash(hash_main, "Webcam").match(/oui/i) ? true : false) rescue nil
     pc[:main_photo] = page.search('div#productphoto a').first[:href]
 
-
+    
+    # Objet final pour le Computer
     final = Computer.to_pc(pc)
-    # c = ComputersPrice.where(url: pc[:url])
-    Computer.create(final)
+
+    cprice = ComputersPrice.where(url: pc[:url])
+    
+    if cprice.count < 1
+      pp final
+      c = Computer.create(final)
+      ComputersPrice.create(computer_id: c.id, url: pc[:url], pricing: {DateTime.now => pc[:price].to_i}, trader_id: 3, last_price: pc[:price].to_i)
+
+    else
+      # Mise à jour du price
+      if cprice.first.pricing.to_a.last.last.to_i != pc[:price]
+        cprice.first.pricing[DateTime.now] = pc[:price]
+        cprice.first.last_price = pc[:price]
+        cprice.first.save!
+      else
+        cprice.first.update(last_price: pc[:price]) if cprice.first.last_price != pc[:price]
+      end
+
+      cprice.first.computer.update(final)
+      # Mise à jour du PC en base
+
+    end
+
   end
 
 

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :computers_brands
   resources :computers_quests_resps
   resources :computers_quests
   resources :computers_prices
