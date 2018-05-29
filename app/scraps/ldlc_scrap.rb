@@ -26,6 +26,7 @@ class LdlcScrap #< MainScraper::Scrap
     begin
       page = Mechanize.new.get(url)
     rescue Exception=>e
+      return
     end
 
     pc = {}
@@ -47,7 +48,7 @@ class LdlcScrap #< MainScraper::Scrap
     end
 
     pc[:url] = url
-    pc[:price] = Integer(page.search('span.price.sale').text.gsub(/[[:space:]]/, '').to_i)
+    pc[:price] = page.search('span.price.sale').text.gsub(/[[:space:]]/, '').to_f
     pc[:model] = page.search('span.fn.designation_courte').text
     pc[:brand] = extract_from_hash(hash_main, "Marque")
     pc[:model] = extract_from_hash(hash_main, "Modèle")
@@ -114,40 +115,18 @@ class LdlcScrap #< MainScraper::Scrap
     pc[:disk] = hash_disk
     pc[:screen] = hash_screen
     pc[:keyboard] = hash_keyboard
-
     pc[:network] = hash_network
     pc[:gpu] = hash_graphics
     pc[:webcam] = (extract_from_hash(hash_main, "Webcam").match(/oui/i) ? true : false) rescue nil
     pc[:main_photo] = page.search('div#productphoto a').first[:href]
 
+    pc[:weight] = (extract_from_hash(hash_main, "Poids").gsub(",",".").to_f) rescue nil
+    pc[:width] = (extract_from_hash(hash_main, "Largeur").gsub(",",".").to_f) rescue nil
+    pc[:length] = (extract_from_hash(hash_main, "Profondeur").gsub(",",".").to_f) rescue nil
+    pc[:height] = (extract_from_hash(hash_main, "Epaisseur Arrière").gsub(",",".").to_f) rescue nil
     
     # Objet final pour le Computer
-    begin
-      final = Computer.to_pc(pc)
-
-      cprice = ComputersPrice.where(url: pc[:url])
-
-      if cprice.count < 1
-        c = Computer.create(final)
-        ComputersPrice.create(computer_id: c.id, url: pc[:url], pricing: {DateTime.now => pc[:price].to_i}, trader_id: 3, last_price: pc[:price].to_i)
-
-      else
-        # Mise à jour du price
-        if cprice.first.pricing.to_a.last.last.to_i != pc[:price]
-          cprice.first.pricing[DateTime.now] = pc[:price]
-          cprice.first.last_price = pc[:price]
-          cprice.first.save!
-        else
-          cprice.first.update(last_price: pc[:price]) if cprice.first.last_price != pc[:price]
-        end
-
-        cprice.first.computer.update(final)
-        # Mise à jour du PC en base
-
-      end
-    rescue Exception => e
-      puts e
-    end
+    Computer.insert_pc(pc)
 
   end
 

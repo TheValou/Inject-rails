@@ -8,8 +8,38 @@ class Computer < ApplicationRecord
 	has_one :computers_o
 
 
-	def self.to_pc(pc_hash)
-		pc = {}
+	def self.insert_pc(pc)
+
+		begin
+			final = to_pc(pc)
+
+			cprice = ComputersPrice.where(url: pc[:url])
+
+			if cprice.count < 1
+				c = create(final)
+				ComputersPrice.create(computer_id: c.id, url: pc[:url], pricing: {DateTime.now => pc[:price].to_i}, trader_id: 3, last_price: pc[:price].to_i)
+			else
+        		# Mise à jour du price
+        		if cprice.first.pricing.to_a.last.last.to_i != pc[:price]
+        			cprice.first.pricing[DateTime.now] = pc[:price]
+        			cprice.first.last_price = pc[:price]
+        			cprice.first.save!
+        		else
+        			cprice.first.update(last_price: pc[:price]) if cprice.first.last_price != pc[:price]
+        		end
+
+        		# Mise à jour du PC en base
+        		cprice.first.computer.update(final)
+
+        	end
+        rescue Exception => e
+        	puts e
+        end
+
+    end
+
+    def self.to_pc(pc_hash)
+    	pc = {}
 
 		# OS du PC
 		pc[:os_id] = check_os(pc_hash[:os])
@@ -24,44 +54,36 @@ class Computer < ApplicationRecord
 
 
 		# Infos sur le clavier
-		pc.merge!(pc_hash[:keyboard])
+		pc.merge!(pc_hash[:keyboard]) if pc_hash[:keyboard]
 		# ____________________________________
 
 
 
 		# CPU du PC
-		# pc[:cpu_id] = check_cpu(pc_hash[:cpu])
-		c = ComputersCpu.create_with(name: pc_hash[:cpu][:cpu_name]).find_or_create_by(name: pc_hash[:cpu][:cpu_name])
-		pc[:cpu_id] = c.id
-		#check_cpu(pc_hash[:cpu])
+		pc[:cpu_id] = check_cpu(pc_hash[:cpu])
+		# ____________________________________
+
+
+
+		# GPU du PC
+		pc[:gpu_id] = check_gpu(pc_hash[:gpu])
 		# ____________________________________
 
 
 
 		# Ecran du PC
-		pc.merge!(pc_hash[:screen])	
+		pc.merge!(pc_hash[:screen]) if pc_hash[:screen]
 		# ____________________________________
 
 
 
-		# GPU
-		if pc_hash[:gpu][:gpu_name]
-			c = ComputersGpu.create_with(name: pc_hash[:gpu][:gpu_name]).find_or_create_by(name: pc_hash[:gpu][:gpu_name])
-			pc[:gpu_id] = c.id
-		else
-			pc[:gpu_id] = 1
-		end
-		# ____________________________________
-
-
-
-		# Activité 
+		# Activité (à améliorer)
 		pc[:activity_id] = 1
 		# ____________________________________
 
 
 
-		# CHipset graphique
+		# Chipset graphique
 		if pc_hash[:Chipset]
 			c = ComputersChipser.create_with(name: pc_hash[:Chipset]).find_or_create_by(name: pc_hash[:Chipset])
 			pc[:chipset_id] = c.id
@@ -85,7 +107,7 @@ class Computer < ApplicationRecord
 
 
 
-		# Ativité du PC
+		# l'annonce du pc est active
 		pc[:active] = true
 		# ____________________________________
 
@@ -96,21 +118,21 @@ class Computer < ApplicationRecord
 		# ____________________________________
 
 
-		p "merde"
-		# pp pc
+		
+		pc[:weight] = pc_hash[:weight] if pc_hash[:weight] # en kg
+		pc[:width] = pc_hash[:width] if pc_hash[:width] #en mm
+		pc[:length] = pc_hash[:length] if pc_hash[:length] #en mm
+		pc[:height] = pc_hash[:height] if pc_hash[:height] #en mm
 
 		pc
 
 
 		# pc[:connector_available]
-		# pc[:weight]
-		# pc[:length]
-		# pc[:width]
-		# pc[:height]
 		
 
 		# Mémoire RAM du PC
 		# check_memory(pc_hash[:memory])
+
 		# pc[:memory_size]
 		# pc[:memory_type]
 		# pc[:memory_max_size]
@@ -121,15 +143,16 @@ class Computer < ApplicationRecord
 		# pc[:storage_size]
 		# pc[:storage_type]
 		# pc[:network]
-		# pc[:webcam]
-		# pc[:active]
-		# pc[]
 
 
 	end
 
 	private
 
+	def self.check_memory
+
+	end
+	
 	def self.check_os(os)
 		return 1 if !os[:os_included]
 		os[:os_name] = os[:os_name].downcase.gsub("microsoft","").strip 
@@ -137,9 +160,13 @@ class Computer < ApplicationRecord
 	end
 
 	def self.check_cpu(cpu)
-		return 1 if !os[:os_included]
-		os[:os_name] = os[:os_name].downcase.gsub("microsoft","").strip 
-		return ComputersO.create_with(name: os[:os_name]).find_or_create_by(name: os[:os_name]).id  if os[:os_included]
+		return 1 if !cpu[:cpu_name]
+		return ComputersCpu.create_with(name: cpu[:cpu_name]).find_or_create_by(name: cpu[:cpu_name]).id
+	end
+
+	def self.check_gpu(gpu)
+		return 1 if !gpu[:gpu_name]
+		return ComputersGpu.create_with(name: gpu[:gpu_name]).find_or_create_by(name: gpu[:gpu_name]).id
 	end
 
 	def self.check_brand(brand, model)
@@ -150,8 +177,6 @@ class Computer < ApplicationRecord
 
 		else
 			brand = brand.downcase.strip if !brand.nil?
-
-			# récupération apr nom de marque
 			brand_search = ComputersBrand.where("name  ~* ?", "#{brand}")
 			return brand_search.first.id if brand_search.count > 0
 			return ComputersBrand.create(name: brand).id if brand_search.count < 1

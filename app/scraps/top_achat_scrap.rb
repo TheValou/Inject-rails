@@ -8,7 +8,6 @@ class TopAchatScrap
     agent = Mechanize.new
     current = 1
     page = agent.get(URL.gsub("PAGE", current.to_s))
-    p URL.gsub("PAGE", current.to_s)
 
     number_max = page.search('nav.pagination a').map{|x| x.text.match(/...(\d+)/)[1] if x.text.match(/...(\d+)/)}.compact.last.to_i if page.search('a').map{|x| x.text.match(/...(\d+)/)[1] if x.text.match(/...(\d+)/)}.compact.length > 0
     loop do  
@@ -29,7 +28,7 @@ class TopAchatScrap
     begin
       page = Mechanize.new.get(url)
     rescue Exception=>e
-      p e
+      return 
     end
 
     pc = {}
@@ -48,12 +47,7 @@ class TopAchatScrap
       x.search('div.caracDesc b').each{|x|(hash_second[x.text.gsub(":","").strip] = x.next_sibling.text) if x.next_sibling}
       hash_main[x.search('div.caracName').text.gsub(/\s+/,' ').gsub(":","").strip] = hash_second
     end
-    # page.search('table#productParametersList tr.even').each do |x|
-    #   hash_main[x.search('td.productParameter').text.gsub(/\s+/,' ').strip] = x.search('td.rowEven').text.gsub(/\s+/,' ').strip
-    # end
-
-    pp hash_main
-
+   
     pc[:url] = url
     pc[:price] = page.search('.priceFinal.fp44').text.gsub(/[[:space:]]/, '').to_f
     pc[:model] = page.search('h1.fn').text
@@ -130,30 +124,8 @@ class TopAchatScrap
     pc[:main_photo] = page.search('div#productphoto a').first[:href] rescue nil
 
    # Objet final pour le Computer
-    final = Computer.to_pc(pc)
-
-    cprice = ComputersPrice.where(url: pc[:url])
-    
-    if cprice.count < 1
-      pp final
-      c = Computer.create(final)
-      ComputersPrice.create(computer_id: c.id, url: pc[:url], pricing: {DateTime.now => pc[:price].to_i}, trader_id: 2, last_price: pc[:price].to_i)
-
-    else
-      # Mise à jour du price
-      if cprice.first.pricing.to_a.last.last.to_i != pc[:price]
-        cprice.first.pricing[DateTime.now] = pc[:price]
-        cprice.first.last_price = pc[:price]
-        cprice.first.save!
-      else
-        cprice.first.update(last_price: pc[:price]) if cprice.first.last_price != pc[:price]
-      end
-
-      cprice.first.computer.update(final)
-      # Mise à jour du PC en base
-
-    end
-  end
+   Computer.insert_pc(pc)
+ end
 
 
   # Extraire une valeur d'un hash

@@ -1,13 +1,4 @@
-# coding: utf-8
-require 'mechanize'
-require 'pp'
-require 'uri'
-require 'net/http'
-require 'openssl'
-require 'json'
-
-
-class Fnac
+class FnacScrap
 
   DOMAIN = "https://www.fnac.com"
   URL = "#{DOMAIN}/Tous-les-ordinateurs-portables/Ordinateurs-portables/nsh154425/w-4?IPageIndex="
@@ -17,67 +8,51 @@ class Fnac
   def self.explore 
     agent = Mechanize.new
     numpage = 1
-    les_pc = []
-    urls = []
     max = 0
-
-    # File.open("test.json","a+") do |f|
-    #     f.write('{"fnac" : [')
-    # end
 
     loop do 
       nb = 0
       page = agent.get(URL+numpage.to_s)
       max = page.search("li.pageView").text.match(/Page \d+ \/ (\d+)/)[1].to_i if max == 0
       page.search('.Article-desc a').each do |x|
-        p x[:href]
-        nb +=1
-        # les_pc.push scrap_pc(x[:href])
-        # File.open("test.json","a+") do |f|
-        #     f.write(scrap_pc(x[:href])+",") if !scrap_pc(x[:href]).nil?
-        #     puts scrap_pc(x[:href])+"," if !scrap_pc(x[:href]).nil?
-        # end
-        urls << x[:href]
+        ad_url = x[:href]
+        scrap_pc(ad_url)
+      end
+      break if numpage == max
+      numpage += 1
     end
-    break if numpage == max
-    numpage += 1
-end
-
-# File.open("test.json","a+") do |f|
-#     f.write("]}")
-# end
-end
+  end
 
 
   # On appelle la méthode pour récupérer les infos sur un PC 
   def self.scrap_pc(url)
     begin
       page = Mechanize.new.get(url)
-  rescue Exception=>e
-  end
+    rescue Exception=>e
+    end
 
-  if !page.at(".f-buyBox-availabilityStatus-unavailable")
+    return if page.at(".f-buyBox-availabilityStatus-unavailable")
 
-      pc = {}
-      hash_main = {}
-      hash_os = {}
-      hash_cpu = {}
-      hash_memory = {}
-      hash_disk = {}
-      hash_display = {}
-      hash_keyboard = {}
-      hash_network = {}
-      hash_graphics = {}
+    pc = {}
+    hash_main = {}
+    hash_os = {}
+    hash_cpu = {}
+    hash_memory = {}
+    hash_disk = {}
+    hash_display = {}
+    hash_keyboard = {}
+    hash_network = {}
+    hash_graphics = {}
 
-      page.search('ul.Feature-list li').each do |x|
-          hash_main[x.at('.Feature-label').text.gsub(/\s+/,' ').strip] = x.at('.Feature-desc').text.gsub(/\s+/,' ').strip
-      end
+    page.search('ul.Feature-list li').each do |x|
+      hash_main[x.at('.Feature-label').text.gsub(/\s+/,' ').strip] = x.at('.Feature-desc').text.gsub(/\s+/,' ').strip
+    end
 
 
-      pc[:url] = url
-      pc[:price] = Integer(page.search('.f-priceBox-price').last.text.gsub(/[[:space:]]/, '').to_i)
-      pc[:title] = page.search('.f-productHeader-Title').text.gsub(/\s+/,' ').strip
-      pc[:brand] = extract_from_hash(hash_main, "Constructeur")
+    pc[:url] = url
+    pc[:price] = Integer(page.search('.f-priceBox-price').last.text.gsub(/[[:space:]]/, '').to_i)
+    pc[:title] = page.search('.f-productHeader-Title').text.gsub(/\s+/,' ').strip
+    pc[:brand] = extract_from_hash(hash_main, "Constructeur")
     # pc[:model] = extract_from_hash(hash_main, "Modèle")
 
 
@@ -146,42 +121,22 @@ end
     pc[:display] = hash_display
     pc[:keyboard] = hash_keyboard
     pc[:network] = hash_network
-    pc[:graphics] = hash_graphics
+    pc[:gpu] = hash_graphics
     pc[:additionnal_informations] = hash_main
-    # pc[:main_photo] = page.search('div#productphoto a').first[:href]
-    # File.open("test.json","a+") do |f|
-    #     f.write(pc.to_json)
-    # end
+    Computer.insert_pc(pc)
+    
+  end
 
 
-    # uri = URI.parse("https://localhost:4433/api/v1/internal/injection/")
-    # https = Net::HTTP.new(uri.host,uri.port)
-    # https.use_ssl = true
-    # https.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    # req = Net::HTTP::Post.new(uri)
-    # # Authentification
-    # # req.set_form_data('userid' => 'myemail@hostname.com', 'passwd' => 'mypassword')
-    # response = https.request(req)
-    # puts response
-    pc.to_json
-else
-    nil
-end
-
-end
 
 
-def self.extract_from_hash hash, key
+  def self.extract_from_hash hash, key
     ret_value = ''
     if key.size > 0 && hash[key]
       ret_value = hash[key]
       hash.delete(key)
       return ret_value
+    end
   end
-end
 
 end
-
-Fnac.explore
-#Fnac.scrap_pc("https://www.fnac.com/PC-Portable-Asus-R540LJ-XX837T-15-6/a10811152/w-4")
-#Fnac.scrap_pc("https://www.fnac.com/PC-Portable-Asus-FX553VD-DM248T-15-6/a10811101/w-4")
