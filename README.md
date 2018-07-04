@@ -1,24 +1,10 @@
-# README
+Système de scrap de données
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+lancer "bundle install" puis rails c " afin d'accèder à la console rails
 
-Things you may want to cover:
+Liste des commandes pour lancer le crawl de chaque site : 
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- "LdlcScrap.explore"
+- "TopAchatScrap.explore"
+- "FnacScrap.explore"
+- "MaterielNetScrap.explore"
