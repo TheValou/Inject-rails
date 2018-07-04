@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180524131513) do
+ActiveRecord::Schema.define(version: 20180703131348) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,8 +90,10 @@ ActiveRecord::Schema.define(version: 20180524131513) do
 
   create_table "computers_gpus", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255, null: false
-    t.integer "score"
+    t.float "score", default: 0.0
     t.string "description", limit: 1024
+    t.string "memory_type"
+    t.integer "max_memory"
   end
 
   create_table "computers_os", id: :serial, force: :cascade do |t|
