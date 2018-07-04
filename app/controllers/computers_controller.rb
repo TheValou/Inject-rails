@@ -44,25 +44,20 @@ class ComputersController < ApplicationController
   # PATCH/PUT /computers/1
   # PATCH/PUT /computers/1.json
   def update
-    puts params
-    aczfég"(hu)
-    puts "UUUPPDDAAAATE"
-    # respond_to do |format|
-    #   if @computer.update(computer_params)
-    #     format.html { redirect_to @computer, notice: 'Computer was successfully updated.' }
-    #     format.json { render :show, status: :ok, location: @computer }
-    #   else
-    #     format.html { render :edit }
-    #     format.json { render json: @computer.errors, status: :unprocessable_entity }
-    #   end
-    # end
+    respond_to do |format|
+      if @computer.update(computer_params)
+        format.html { redirect_to @computer, notice: 'Computer was successfully updated.' }
+        format.json { render :show, status: :ok, location: @computer }
+      else
+        format.html { render :edit }
+        format.json { render json: @computer.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   # DELETE /computers/1
   # DELETE /computers/1.json
   def destroy
-    ComputersPrice.where(computer_id: @computer.id).delete_all
-    @computer.destroy
     respond_to do |format|
       format.html { redirect_to computers_url, notice: 'Computer was successfully destroyed.' }
       format.json { head :no_content }

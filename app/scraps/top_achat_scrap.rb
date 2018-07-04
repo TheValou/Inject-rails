@@ -13,7 +13,7 @@ class TopAchatScrap
     loop do  
       page.search('article.grille-produit a').each do |x|
         ad_url = DOMAIN + x[:href]
-        scrap_pc(ad_url)
+        scrap_pc(ad_url.split('#').first)
       end
       break if current == number_max
       current += 1
@@ -49,11 +49,12 @@ class TopAchatScrap
     end
    
     pc[:url] = url
-    pc[:price] = page.search('.priceFinal.fp44').text.gsub(/[[:space:]]/, '').to_f
+    pc[:price] = page.search(".priceFinal[itemprop='price']").text.gsub(/[[:space:]]/, '').to_f
     pc[:model] = page.search('h1.fn').text
 
     pc[:brand] = extract_from_hash(hash_main, "Marque") if hash_main["Marque"]
     pc[:model] = extract_from_hash(hash_main, "Modèle") if hash_main["Modèle"]
+    pc[:model] = page.search(".fpLib").text.strip if page.search(".fpLib").text.strip != ""
 
 
     # Informations sur le système d'exploitation OK
@@ -108,7 +109,8 @@ class TopAchatScrap
 
 
     # Informations sur la carte graphique
-    hash_graphics[:gpu_name] = extract_from_hash(hash_main, "Chipset graphique")
+    hash_graphics[:gpu_name] = extract_from_hash(hash_main["Carte graphique"], "Type").strip
+    hash_graphics[:gpu_memory_type] = (extract_from_hash(hash_main["Carte graphique"], "Mémoire").strip.match(/\d+ go (.+)/i)[1] rescue nil)
 
 
     #On regroupe toutes les infos dans un hash
@@ -124,7 +126,7 @@ class TopAchatScrap
     pc[:main_photo] = page.search('div#productphoto a').first[:href] rescue nil
 
    # Objet final pour le Computer
-   Computer.insert_pc(pc)
+   Computer.insert_pc(pc, 2)
  end
 
 

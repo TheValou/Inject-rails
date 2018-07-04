@@ -51,12 +51,12 @@ class LdlcScrap #< MainScraper::Scrap
     pc[:price] = page.search('span.price.sale').text.gsub(/[[:space:]]/, '').to_f
     pc[:model] = page.search('span.fn.designation_courte').text
     pc[:brand] = extract_from_hash(hash_main, "Marque")
-    pc[:model] = extract_from_hash(hash_main, "Modèle")
+    pc[:model] = extract_from_hash(hash_main, "Désignation")
 
 
     # Informations sur le système d'exploitation
-    hash_os[:os_name] = extract_from_hash(hash_main, "Famille OS")
-    hash_os[:os_family] = extract_from_hash(hash_main, "Système d'exploitation")
+     #hash_os[:os_name] = extract_from_hash(hash_main, "Famille OS")
+    hash_os[:os_name] = extract_from_hash(hash_main, "Système d'exploitation")
     hash_os[:os_included] = extract_from_hash(hash_main, "Système d'exploitation fourni") == "Oui" ? true : false
     
 
@@ -106,6 +106,7 @@ class LdlcScrap #< MainScraper::Scrap
     # Informations sur la carte graphique
     hash_graphics[:gpu_name] = extract_from_hash(hash_main, "Chipset graphique")
 
+    hash_graphics[:gpu_name] = hash_graphics[:gpu_name].match(/2 x (.+)/)[1] + "SLI" if hash_graphics[:gpu_name].match(/2 x (.+)/)
 
     #On regroupe toutes les infos dans un hash
     pc[:additionnal_informations] = hash_main
@@ -126,7 +127,7 @@ class LdlcScrap #< MainScraper::Scrap
     pc[:height] = (extract_from_hash(hash_main, "Epaisseur Arrière").gsub(",",".").to_f) rescue nil
     
     # Objet final pour le Computer
-    Computer.insert_pc(pc)
+    Computer.insert_pc(pc, 3)
 
   end
 

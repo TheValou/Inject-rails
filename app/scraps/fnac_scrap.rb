@@ -123,7 +123,7 @@ class FnacScrap
     pc[:network] = hash_network
     pc[:gpu] = hash_graphics
     pc[:additionnal_informations] = hash_main
-    Computer.insert_pc(pc)
+    Computer.insert_pc(pc, 4)
     
   end
 
