@@ -16,8 +16,9 @@ class Computer < ApplicationRecord
 
 		search_pc = pc[:model].gsub("(","").gsub(")","")#.gsub("-", " ")
 
-		model = ComputersG.where('lower(name) = ?', search_pc.downcase).first
+		model = ComputersGpu.where('lower(name) = ?', search_pc.downcase).first
 		return model if model
+		return nil
 
 		# Computers.where(cpu_id: pc[:cpu_id], cpu_id: pc[:cpu_id])
 		# Computers.where(gpu_id: pc[:gpu_id], gpu_id: pc[:gpu_id])
@@ -37,7 +38,9 @@ class Computer < ApplicationRecord
 
 			if !cprice
 
-				c = deduplicate(pc) > 0 ? deduplicate(pc) : create(final)
+				c =  deduplicate(pc) if deduplicate(pc) != nil
+
+				c = create(final) if deduplicate(pc) == nil
 				ComputersPrice.create(computer_id: c.id, url: pc[:url], pricing: {DateTime.now => pc[:price].to_i}, trader_id: trader, last_price: pc[:price].to_i)
 			else
         		# Mise à jour du price
