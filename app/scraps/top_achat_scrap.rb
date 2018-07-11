@@ -47,7 +47,7 @@ class TopAchatScrap
       x.search('div.caracDesc b').each{|x|(hash_second[x.text.gsub(":","").strip] = x.next_sibling.text) if x.next_sibling}
       hash_main[x.search('div.caracName').text.gsub(/\s+/,' ').gsub(":","").strip] = hash_second
     end
-   
+
     pc[:url] = url
     pc[:price] = page.search(".priceFinal[itemprop='price']").text.gsub(/[[:space:]]/, '').to_f
     pc[:model] = page.search('h1.fn').text
@@ -73,6 +73,7 @@ class TopAchatScrap
 
     # Informations sur la mémoire
     hash_memory[:memory_strips] = extract_from_hash(hash_main["Mémoire (RAM)"], "Nombre de barrettes")
+    
     hash_memory[:memory_size] = extract_from_hash(hash_main["Mémoire (RAM)"], "Taille de la mémoire")
     hash_memory[:memory_max_size] = extract_from_hash(hash_main["Mémoire (RAM)"], "Taille de mémoire Max")
     hash_memory[:memory_type] = extract_from_hash(hash_main["Mémoire (RAM)"], "Type")
@@ -99,9 +100,9 @@ class TopAchatScrap
 
 
     # Informations sur le clavier
-    hash_keyboard[:keyboard_type] = extract_from_hash(hash_main, "Norme du clavier")
-    hash_keyboard[:keyboard_numpad] = extract_from_hash(hash_main, "Pavé numérique") == "Oui" ? true : false
-    hash_keyboard[:keyboard_light] = extract_from_hash(hash_main, "Clavier rétroéclairé") == "Oui" ? true : false
+    hash_keyboard[:keyboard_type] = extract_from_hash(hash_main["Matériel"], "Clavier")
+    # hash_keyboard[:keyboard_numpad] = extract_from_hash(hash_main, "Pavé numérique") == "Oui" ? true : false
+    hash_keyboard[:keyboard_light] = extract_from_hash(hash_main["Matériel"], "Clavier rétroéclairé").match(/Oui/i) ? true : false
 
 
     # Informations sur la carte réseau
@@ -125,9 +126,16 @@ class TopAchatScrap
     pc[:gpu] = hash_graphics
     pc[:main_photo] = page.search('div#productphoto a').first[:href] rescue nil
 
+    pc[:weight] = (extract_from_hash(hash_main["Poids"], "Poids").strip.gsub(",",".").to_f) rescue nil
+    dimensions =  extract_from_hash(hash_main["Dimensions"], "Dimensions")
+    pc[:width] = (dimensions.split("x")[0].gsub(",",".").to_f) rescue nil
+    pc[:length] = (dimensions.split("x")[1].gsub(",",".").to_f) rescue nil
+    pc[:height] = (dimensions.split("x")[2].gsub(",",".").to_f) rescue nil
+    
    # Objet final pour le Computer
-   Computer.insert_pc(pc, 2)
- end
+   #pp pc
+Computer.insert_pc(pc, 2)
+end
 
 
   # Extraire une valeur d'un hash

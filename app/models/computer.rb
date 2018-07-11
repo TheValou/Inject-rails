@@ -10,20 +10,36 @@ class Computer < ApplicationRecord
 	has_many :computer_disks
 	has_one :computers_brand
 
+	COLOURS = [
+		"gris", 
+		"rouge", 
+		"vert", 
+		"violet", 
+		"argent", 
+		"noir", 
+		"bleu"
+	]
+
+	def string_difference_percent(a, b)
+		longer = [a.size, b.size].max
+		same = a.each_char.zip(b.each_char).select { |a,b| a == b }.size
+		(longer - same) / a.size.to_f
+	end
 
 	def self.deduplicate(pc)
 
+		search_pc = pc[:model].downcase
+		COLOURS.each{|colour| search_pc = search_pc.gsub(colour,"")}
 
-		search_pc = pc[:model].gsub("(","").gsub(")","")#.gsub("-", " ")
-
-		model = ComputersGpu.where('lower(name) = ?', search_pc.downcase).first
+		model = Computer.where('lower(model) = ?', search_pc).first
 		return model if model
+
+		simil = Computer.where(cpu_id: pc[:cpu_id], gpu_id: pc[:gpu_id])
+		simil.each do |c|
+			return c if string_difference_percent(c.name, search_pv.donwcase) <= 0.35
+		end
+
 		return nil
-
-		# Computers.where(cpu_id: pc[:cpu_id], cpu_id: pc[:cpu_id])
-		# Computers.where(gpu_id: pc[:gpu_id], gpu_id: pc[:gpu_id])
-
-
 	end
 
 
@@ -32,15 +48,14 @@ class Computer < ApplicationRecord
 		begin
 			final = to_pc(pc)
 
-			# deduplicate(final)
-
 			cprice = ComputersPrice.where(url: pc[:url]).first
 
-			if !cprice
+			if !cprice #pas l'url en base
 
-				c =  deduplicate(pc) if deduplicate(pc) != nil
+				c = deduplicate(pc) if deduplicate(pc) != nil
 
 				c = create(final) if deduplicate(pc) == nil
+
 				ComputersPrice.create(computer_id: c.id, url: pc[:url], pricing: {DateTime.now => pc[:price].to_i}, trader_id: trader, last_price: pc[:price].to_i)
 			else
         		# Mise à jour du price
@@ -52,22 +67,31 @@ class Computer < ApplicationRecord
         			cprice.update(last_price: pc[:price]) if cprice.last_price != pc[:price]
         			cprice.update(trader_id: trader)
         		end
-
-        		# Mise à jour du PC en base
-        		cprice.computer.update(final)
-
-
-
+        		c = cprice.computer
         	end
-        rescue Exception => e
-        	puts e
+        		# Mise à jour du PC en base, CHANGER Update
+        		to_update = update_fields(final, c)
+        		c.update(to_update)
+
+        	rescue Exception => e
+        		puts e
+        	end
+
         end
 
-    end
+        def self.update_fields(final, pc)
+        	final[:model] = pc[:model] if final[:model] == "?"
+        	final[:model] = final[:model] if pc[:model] == "?"
+        	final[:model] = pc[:model] if pc[:model] != "?" && final[:model] != "?"
+        	pp final
 
-    def self.to_pc(pc_hash)
-    	pc = {}
+        	final
+        end
 
+        def self.to_pc(pc_hash)
+        	pc = {}
+
+        	pp pc_hash
 		# OS du PC
 		pc[:os_id] = check_os(pc_hash[:os])
 		# ____________________________________
@@ -131,7 +155,7 @@ class Computer < ApplicationRecord
 
 
 		# Titre
-		pc[:model] = pc_hash[:model] ? pc_hash[:model] : "?"
+		pc[:model] = pc_hash[:model] ? pc_hash[:model].gsub("(","").gsub(")","").strip : "?"
 		# ____________________________________
 
 
@@ -153,27 +177,27 @@ class Computer < ApplicationRecord
 		pc[:length] = pc_hash[:length] if pc_hash[:length] #en mm
 		pc[:height] = pc_hash[:height] if pc_hash[:height] #en mm
 
-		pp pc
-		pc
 
 
 		# pc[:connector_available]
 		
 
 		# Mémoire RAM du PC
-		# check_memory(pc_hash[:memory])
+		pc.merge!(pc_hash[:memory]) if pc_hash[:memory]
 
-		# pc[:memory_size]
-		# pc[:memory_type]
-		# pc[:memory_max_size]
+		# pc[:memory_size] = pc_hash[:memory][:memory_size] if pc_hash[:memory][:memory_size]
+		# pc[:memory_type] = pc[:memory][:memory_type] if pc[:memory][:memory_type]
+		# pc[:memory_max_size] = pc[:memory][:memory_max_size] if pc[:memory][:memory_max_size]
 		# ____________________________________
 		
+
 
 
 		# pc[:storage_size]
 		# pc[:storage_type]
 		# pc[:network]
 
+		pc
 
 	end
 
@@ -204,15 +228,17 @@ class Computer < ApplicationRecord
 	def self.check_cpu(cpu)
 		return 1 if !cpu[:cpu_name]
 		cpu[:cpu_name] = cpu[:cpu_name].gsub(/\(.+\)/,"").strip
-		return ComputersCpu.create_with(name: cpu[:cpu_name]).find_or_create_by(name: cpu[:cpu_name]).id
+		model = ComputersCpu.where('lower(name) = ?', cpu[:cpu_name].downcase).first
+		model ||= ComputersCpu.create(name: cpu[:cpu_name])
+		model.id
 	end
 
 	def self.check_gpu(gpu)
 		return 1 if !gpu[:gpu_name]
+		gpu[:gpu_name] = gpu[:gpu_name].gsub(/\(.+\)/,"").strip
 		model = ComputersGpu.where('lower(name) = ?', gpu[:gpu_name].downcase).first
 		model ||= ComputersGpu.create(name: gpu[:gpu_name])
 		model.id
-		#return ComputersGpu.create_with(name: gpu[:gpu_name]).find_or_create_by(name: gpu[:gpu_name]).id
 	end
 
 	def self.check_brand(brand, model)

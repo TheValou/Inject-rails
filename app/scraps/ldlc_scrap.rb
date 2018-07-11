@@ -23,6 +23,9 @@ class LdlcScrap #< MainScraper::Scrap
 
   # On appelle la méthode pour récupérer les infos sur un PC 
   def self.scrap_pc(url)
+    agent = Mechanize.new
+    agent.user_agent = agent.get_random_user_agent
+
     begin
       page = Mechanize.new.get(url)
     rescue Exception=>e
@@ -68,7 +71,7 @@ class LdlcScrap #< MainScraper::Scrap
 
 
     # Informations sur la mémoire
-    hash_memory[:memory_strips] = extract_from_hash(hash_main, "Nombre de barrettes")
+   # hash_memory[:memory_strips] = extract_from_hash(hash_main, "Nombre de barrettes")
     hash_memory[:memory_size] = extract_from_hash(hash_main, "Taille de la mémoire")
     hash_memory[:memory_max_size] = extract_from_hash(hash_main, "Taille de mémoire Max")
     hash_memory[:memory_type] = extract_from_hash(hash_main, "Type de mémoire")
@@ -127,6 +130,7 @@ class LdlcScrap #< MainScraper::Scrap
     pc[:height] = (extract_from_hash(hash_main, "Epaisseur Arrière").gsub(",",".").to_f) rescue nil
     
     # Objet final pour le Computer
+#    pp pc
     Computer.insert_pc(pc, 3)
 
   end

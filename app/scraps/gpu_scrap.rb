@@ -1,4 +1,4 @@
-class GpuScrap #< MainScraper::Scrap
+class GpuScrap
 
   DOMAIN = "https://www.notebookcheck.net/"
   URL = "#{DOMAIN}/Mobile-Graphics-Cards-Benchmark-List.844.0.html?&3dmark13_cloud_gpu=1&archive=1&boostspeed=1&codename=1&corespeed=1&directx=1&gpu_fullname=1&memorybus=1&memoryspeed=1&memorytype=1&or=0&perfrating=1&showBars=1&showClassDescription=1&showCount=1&showPercent=1&sort=&type=gpu_fullname"
@@ -10,6 +10,8 @@ class GpuScrap #< MainScraper::Scrap
     gpus = []
     page.search("tr.odd").map{|x| gpus << x}
     page.search("tr.even").map{|x| gpus << x}
+    page.search("tr.desk_even").map{|x| gpus << x}
+    page.search("tr.desk_odd").map{|x| gpus << x}
 
     gpus.each do |x| 
       note = x.at(".bl_ch_value").text.strip.to_f
