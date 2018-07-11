@@ -72,12 +72,12 @@ class TopAchatScrap
 
 
     # Informations sur la mémoire
-    hash_memory[:memory_strips] = extract_from_hash(hash_main["Mémoire (RAM)"], "Nombre de barrettes")
-    
-    hash_memory[:memory_size] = extract_from_hash(hash_main["Mémoire (RAM)"], "Taille de la mémoire")
-    hash_memory[:memory_max_size] = extract_from_hash(hash_main["Mémoire (RAM)"], "Taille de mémoire Max")
-    hash_memory[:memory_type] = extract_from_hash(hash_main["Mémoire (RAM)"], "Type")
-    #extraite et modifier dans computer  
+    memory_type = extract_from_hash(hash_main["Mémoire (RAM)"], "Type")
+    memory_config = extract_from_hash(hash_main["Mémoire (RAM)"], "Configuration")
+    hash_memory[:memory_size] = memory_type.match(/(\d+) Go/)[1].to_i rescue nil
+    hash_memory[:memory_max_size] = hash_memory[:memory_size] if memory_config && memory_config.match(/Non extensible/i)
+    hash_memory[:memory_max_size] = memory_config.match(/Extension possible jusqu\'à (\d+) Go/i)[1].to_i if memory_config && memory_config.match(/Extension possible jusqu\'à (\d+) Go/i)
+    hash_memory[:memory_type] = memory_type.match(/\d+ Go (.+) \(\d+ MHz\)/)[1] rescue nil
 
 
     # Informations sur le(s) disque(s) dur(s)
@@ -92,10 +92,13 @@ class TopAchatScrap
 
 
     # Informations sur l'écran
-    hash_screen[:screen_type] = extract_from_hash(hash_main, "Type d'écran")
-    hash_screen[:screen_resolution] = extract_from_hash(hash_main, "Résolution Max")
-    hash_screen[:screen_refresh_rate] = extract_from_hash(hash_main, "Taux de rafraîchissement")
-    hash_screen[:screen_size] = extract_from_hash(hash_main, "Taille de l'écran")
+    type_screen = extract_from_hash(hash_main["Ecran"], "Type")
+
+    hash_screen[:screen_type] = "LCD" if type_screen.match(/lcd/i)
+    hash_screen[:screen_type] = "LED" if type_screen.match(/led/i)
+    hash_screen[:screen_resolution] = extract_from_hash(hash_main["Ecran"], "Résolution").match(/\((\d+ *x *\d+)\)/)[1] rescue nil
+    hash_screen[:screen_refresh_rate] = type_screen.match(/(\d+) Hz/i)[1].to_i rescue nil
+    hash_screen[:screen_size] = type_screen.match(/([\d|.]+) pouces/i)[1].to_f  if type_screen && type_screen.match(/([\d|.]+) pouces/i)
     hash_screen[:screen_format] = extract_from_hash(hash_main, "Format de l'écran")
 
 
@@ -124,8 +127,9 @@ class TopAchatScrap
     pc[:keyboard] = hash_keyboard
     pc[:network] = hash_network
     pc[:gpu] = hash_graphics
-    pc[:main_photo] = page.search('div#productphoto a').first[:href] rescue nil
+    pc[:main_photo] = page.search('img.main-image').first[:src].sub("//","") rescue nil
 
+    pc[:webcam] = true if extract_from_hash(hash_main["Matériel"], "Webcam") != nil
     pc[:weight] = (extract_from_hash(hash_main["Poids"], "Poids").strip.gsub(",",".").to_f) rescue nil
     dimensions =  extract_from_hash(hash_main["Dimensions"], "Dimensions")
     pc[:width] = (dimensions.split("x")[0].gsub(",",".").to_f) rescue nil
@@ -133,9 +137,10 @@ class TopAchatScrap
     pc[:height] = (dimensions.split("x")[2].gsub(",",".").to_f) rescue nil
     
    # Objet final pour le Computer
-   #pp pc
-Computer.insert_pc(pc, 2)
-end
+   p "_________________________________________________________________________"
+   pp pc
+   Computer.insert_pc(pc, 2)
+ end
 
 
   # Extraire une valeur d'un hash

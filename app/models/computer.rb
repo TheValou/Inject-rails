@@ -183,6 +183,8 @@ class Computer < ApplicationRecord
 		
 
 		# Mémoire RAM du PC
+		p pc_hash[:memory]
+		# pc_hash[:memory].each{|x, v| pc_hash[:memory][x] = v.gsub(/go/i,"").strip.to_i if v && v.class == String}
 		pc.merge!(pc_hash[:memory]) if pc_hash[:memory]
 
 		# pc[:memory_size] = pc_hash[:memory][:memory_size] if pc_hash[:memory][:memory_size]

@@ -72,8 +72,8 @@ class LdlcScrap #< MainScraper::Scrap
 
     # Informations sur la mémoire
    # hash_memory[:memory_strips] = extract_from_hash(hash_main, "Nombre de barrettes")
-    hash_memory[:memory_size] = extract_from_hash(hash_main, "Taille de la mémoire")
-    hash_memory[:memory_max_size] = extract_from_hash(hash_main, "Taille de mémoire Max")
+    hash_memory[:memory_size] = extract_from_hash(hash_main, "Taille de la mémoire").gsub(/go/i,"").strip.to_i
+    hash_memory[:memory_max_size] = extract_from_hash(hash_main, "Taille de mémoire Max").gsub(/go/i,"").strip.to_i rescue nil
     hash_memory[:memory_type] = extract_from_hash(hash_main, "Type de mémoire")
 
 
@@ -90,7 +90,7 @@ class LdlcScrap #< MainScraper::Scrap
 
     # Informations sur l'écran
     hash_screen[:screen_type] = extract_from_hash(hash_main, "Type d'écran")
-    hash_screen[:screen_resolution] = extract_from_hash(hash_main, "Résolution Max")
+    hash_screen[:screen_resolution] = extract_from_hash(hash_main, "Résolution Max").gsub(/pixels/i, "").strip
     hash_screen[:screen_refresh_rate] = extract_from_hash(hash_main, "Taux de rafraîchissement")
     hash_screen[:screen_size] = extract_from_hash(hash_main, "Taille de l'écran")
     hash_screen[:screen_format] = extract_from_hash(hash_main, "Format de l'écran")
@@ -128,6 +128,8 @@ class LdlcScrap #< MainScraper::Scrap
     pc[:width] = (extract_from_hash(hash_main, "Largeur").gsub(",",".").to_f) rescue nil
     pc[:length] = (extract_from_hash(hash_main, "Profondeur").gsub(",",".").to_f) rescue nil
     pc[:height] = (extract_from_hash(hash_main, "Epaisseur Arrière").gsub(",",".").to_f) rescue nil
+    p url
+    pc[:height] = ((extract_from_hash(hash_main, "Epaisseur").gsub(",",".").to_f) if pc[:height].nil?) rescue nil
     
     # Objet final pour le Computer
 #    pp pc
