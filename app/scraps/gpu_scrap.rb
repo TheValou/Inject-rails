@@ -15,12 +15,15 @@ class GpuScrap
 
     gpus.each do |x| 
       note = x.at(".bl_ch_value").text.strip.to_f
-      titre = x.at("td.specs a").text.gsub(/\(laptop\)/i,"").gsub(/\(notebook\)/i,"").strip
+      titre = x.at("td.specs a").text.gsub(/\(laptop\)/i,"").gsub(/\(notebook\)/i,"").strip rescue nil
+      titre = x.search("td.specs")[1].text.gsub(/\(laptop\)/i,"").gsub(/\(notebook\)/i,"").strip if titre.nil?
+
       gpu_search = ComputersGpu.where(name: titre)
 
-      doc = agent.get(x.at("td.specs a")[:href])
-      mem_type = (doc.search("tr.gpu-even").select{|x| x.at(".caption").text.match(/memory type/i)}.first.search("td").last.text rescue "")
-
+      if x.at("td.specs a")
+        doc = agent.get(x.at("td.specs a")[:href]) 
+        mem_type = (doc.search("tr.gpu-even").select{|x| x.at(".caption").text.match(/memory type/i)}.first.search("td").last.text rescue "")
+      end
 
       if gpu_search.length > 0
         gpu_search.first.update(score: note, memory_type: mem_type)

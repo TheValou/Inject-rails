@@ -8,6 +8,7 @@ class LdlcScrap #< MainScraper::Scrap
     agent = Mechanize.new
     page = agent.get(URL)
 
+    # ON parcoure toutes les pages de PC du site
     loop do  
       page.search('td.designation a.nom').each do |x|
         scrap_pc(x[:href])
@@ -128,11 +129,9 @@ class LdlcScrap #< MainScraper::Scrap
     pc[:width] = (extract_from_hash(hash_main, "Largeur").gsub(",",".").to_f) rescue nil
     pc[:length] = (extract_from_hash(hash_main, "Profondeur").gsub(",",".").to_f) rescue nil
     pc[:height] = (extract_from_hash(hash_main, "Epaisseur Arrière").gsub(",",".").to_f) rescue nil
-    p url
     pc[:height] = ((extract_from_hash(hash_main, "Epaisseur").gsub(",",".").to_f) if pc[:height].nil?) rescue nil
     
     # Objet final pour le Computer
-#    pp pc
     Computer.insert_pc(pc, 3)
 
   end
