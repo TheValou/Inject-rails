@@ -6,11 +6,11 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: needpc7
-  host: 127.0.0.1
+  database: <%= ENV['DATABASE_NAME'] %>
+  host:  <%= ENV['DATABASE_HOST'] %>
   pool: 5
-  username: valentin
-  password: wurfl
+  username: <%= ENV['DATABASE_USER'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -19,19 +19,18 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: needpc7
-  host: 127.0.0.1
+  database: <%= ENV['DATABASE_NAME_TEST'] %>
+  host: <%= ENV['DATABASE_HOST'] %>
   pool: 5
-  username: valentin
-  password: wurfl
+  username: <%= ENV['DATABASE_USER'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
 
 
 production:
   adapter: postgresql
   encoding: unicode
-  database: needpc7
-  host: 127.0.0.1
-  pool: 5
-  username: valentin
-  password: wurfl
-
+  database: DATABASE_NAME
+  host: DATABASE_HOST
+  pool: 20
+  username: DATABASE_USERNAME
+  password: DATABASE_PASSWORD
