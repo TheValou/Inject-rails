@@ -4,13 +4,13 @@ class TopAchatScrap
   URL = "#{DOMAIN}/pages/produits_cat_est_ordinateurs_puis_rubrique_est_wport_puis_page_est_PAGE.html"
 
 
-  def self.explore 
+  def self.explore
     agent = Mechanize.new
     current = 1
     page = agent.get(URL.gsub("PAGE", current.to_s))
 
     number_max = page.search('nav.pagination a').map{|x| x.text.match(/...(\d+)/)[1] if x.text.match(/...(\d+)/)}.compact.last.to_i if page.search('a').map{|x| x.text.match(/...(\d+)/)[1] if x.text.match(/...(\d+)/)}.compact.length > 0
-    loop do  
+    loop do
       page.search('article.grille-produit a').each do |x|
         ad_url = DOMAIN + x[:href]
         scrap_pc(ad_url.split('#').first)
@@ -23,12 +23,12 @@ class TopAchatScrap
   end
 
 
-  # On appelle la méthode pour récupérer les infos sur un PC 
+  # On appelle la méthode pour récupérer les infos sur un PC
   def self.scrap_pc(url)
     begin
       page = Mechanize.new.get(url)
     rescue Exception=>e
-      return 
+      return
     end
 
     pc = {}
@@ -60,15 +60,15 @@ class TopAchatScrap
     # Informations sur le système d'exploitation OK
     hash_os[:os_name] = extract_from_hash(hash_main["Système d'exploitation"], "OS").strip
     hash_os[:os_included] = extract_from_hash(hash_main["Système d'exploitation"], "OS") == "Sans OS" ? false : true
-    
-    
+
+
 
     # Informations sur le processeur
     hash_cpu[:cpu_name] = extract_from_hash(hash_main["Processeur"], "Type")
     hash_cpu[:cpu_model] = extract_from_hash(hash_main["Processeur"], "Processeur")
     hash_cpu[:cpu_brand] = extract_from_hash(hash_main["Processeur"], "Marque processeur")
     hash_cpu[:cpu_frequency] = extract_from_hash(hash_main["Processeur"], "Fréquence")
-    #extraite et modifier dans computer  
+    #extraite et modifier dans computer
 
 
     # Informations sur la mémoire
@@ -104,12 +104,9 @@ class TopAchatScrap
 
     # Informations sur le clavier
     hash_keyboard[:keyboard_type] = extract_from_hash(hash_main["Matériel"], "Clavier")
+    hash_keyboard[:keyboard_type] = hash_keyboard[:keyboard_type].match(/azerty/i) ? "AZERTY" : hash_keyboard[:keyboard_type]
     # hash_keyboard[:keyboard_numpad] = extract_from_hash(hash_main, "Pavé numérique") == "Oui" ? true : false
     hash_keyboard[:keyboard_light] = extract_from_hash(hash_main["Matériel"], "Clavier rétroéclairé").match(/Oui/i) ? true : false
-
-
-    # Informations sur la carte réseau
-    hash_network[:network_norm] = extract_from_hash(hash_main, "Norme(s) réseau")
 
 
     # Informations sur la carte graphique
@@ -125,9 +122,10 @@ class TopAchatScrap
     pc[:disk] = hash_disk
     pc[:screen] = hash_screen
     pc[:keyboard] = hash_keyboard
-    pc[:network] = hash_network
+    pc[:network] =  (extract_from_hash(hash_main["Connectivité"], "Wifi"))
     pc[:gpu] = hash_graphics
     pc[:main_photo] = page.search('img.main-image').first[:src].sub("//","") rescue nil
+    pc[:connector_available] = hash_main["Connectique"] if hash_main["Connectique"]
 
     pc[:webcam] = true if extract_from_hash(hash_main["Matériel"], "Webcam") != nil
     pc[:weight] = (extract_from_hash(hash_main["Poids"], "Poids").strip.gsub(",",".").to_f) rescue nil
@@ -135,12 +133,10 @@ class TopAchatScrap
     pc[:width] = (dimensions.split("x")[0].gsub(",",".").to_f) rescue nil
     pc[:length] = (dimensions.split("x")[1].gsub(",",".").to_f) rescue nil
     pc[:height] = (dimensions.split("x")[2].gsub(",",".").to_f) rescue nil
-    
-   # Objet final pour le Computer
-   p "_________________________________________________________________________"
-   pp pc
-   Computer.insert_pc(pc, 2)
- end
+
+    # Objet final pour le Computer
+    Computer.insert_pc(pc, 2)
+  end
 
 
   # Extraire une valeur d'un hash

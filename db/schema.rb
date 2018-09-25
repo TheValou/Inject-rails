@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180703131348) do
+ActiveRecord::Schema.define(version: 20180925125836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,8 +42,8 @@ ActiveRecord::Schema.define(version: 20180703131348) do
     t.string "width", limit: 16
     t.string "height", limit: 16
     t.string "memory_type", limit: 128
-    t.string "memory_size", limit: 128
-    t.string "memory_max_size", limit: 128
+    t.integer "memory_size"
+    t.integer "memory_max_size"
     t.string "keyboard_type", limit: 128
     t.boolean "keyboard_numpad"
     t.boolean "keyboard_light"
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(version: 20180703131348) do
 
   create_table "computers_cpus", id: :serial, force: :cascade do |t|
     t.string "name", limit: 128, null: false
-    t.integer "score"
+    t.float "score", default: 0.0
     t.string "description", limit: 512
   end
 
