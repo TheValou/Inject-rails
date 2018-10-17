@@ -14,7 +14,8 @@ class GpuScrap
     page.search("tr.desk_odd").map{|x| gpus << x}
 
     gpus.each do |x| 
-      note = x.at(".bl_ch_value").text.strip.to_f
+      note = x.at(".bl_ch_value").text.strip.to_f + 30
+      note = 100 if note > 100
       titre = x.at("td.specs a").text.gsub(/\(laptop\)/i,"").gsub(/\(notebook\)/i,"").strip rescue nil
       titre = x.search("td.specs")[1].text.gsub(/\(laptop\)/i,"").gsub(/\(notebook\)/i,"").strip if titre.nil?
 
