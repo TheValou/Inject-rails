@@ -128,8 +128,9 @@ class Computer < ApplicationRecord
 
     # Activité (à améliorer)
     pc[:activity_id] = 1
-    pc[:activity_id] = 2 if ComputersGpu.find(pc[:gpu_id]).score > 35
-    pc[:activity_id] = 3 if ComputersGpu.find(pc[:gpu_id]).score < 8
+    gpu = ComputersGpu.find(pc[:gpu_id])
+    pc[:activity_id] = 2 if gpu && gpu.score > 35
+    pc[:activity_id] = 3 if gpu && gpu.score < 8
     # ____________________________________
 
 

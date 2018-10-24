@@ -51,7 +51,7 @@ class FnacScrap
 
     pc[:url] = url
     pc[:price] = Integer(page.search('.f-priceBox-price').last.text.gsub(/[[:space:]]/, '').to_i)
-    pc[:title] = page.search('.f-productHeader-Title').text.gsub(/\s+/,' ').strip
+    pc[:model] = page.search('.f-productHeader-Title').text.gsub(/\s+/,' ').strip
     pc[:brand] = extract_from_hash(hash_main, "Constructeur")
     # pc[:model] = extract_from_hash(hash_main, "Modèle")
 
