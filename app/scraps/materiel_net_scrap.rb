@@ -1,77 +1,70 @@
 class MaterielNetScrap
 
-# 
-DOMAIN = "https://www.materiel.net"
-URL = "#{DOMAIN}/pc-portable/?p="
+  DOMAIN = "https://www.materiel.net"
+  URL = "#{DOMAIN}/pc-portable/l409/page"
 
-
-def self.explore 
-	agent = Mechanize.new
-	current = 1
-	page = agent.get(URL+current.to_s)
-	number_max = page.search('.headTopPaginationComparaison').text.match(/Page \d+ sur (\d+)/)[1].to_i
-	loop do  
-		page.search('.ProdListL1').each do |x|
-			ad_url = DOMAIN + x.at('a')[:href].split('#').first
-			p ad_url
-        	scrap_pc(ad_url)
-        end
-        break if current == number_max
-        current += 1
+  def self.explore
+    agent = Mechanize.new
+    current = 1
+    loop do
+      begin
         page = agent.get(URL+current.to_s)
+      rescue Mechanize::ResponseCodeError => e
+        break if e.page.code == '404'
+      end
+      page.search('.c-product__meta a').each do |x|
+        ad_url = DOMAIN + x[:href].split('#').first
+        scrap_pc(ad_url) if ad_url.match(/produit/i)
+      end
+      current += 1
     end
 
-end
+  end
 
 
-  # On appelle la méthode pour récupérer les infos sur un PC 
+  # On appelle la méthode pour récupérer les infos sur un PC
   def self.scrap_pc(url)
-  	begin
-  		page = Mechanize.new.get(url)
-  	rescue Exception=>e
-  		return
-  	end
+    begin
+      page = Mechanize.new.get(url)
+    rescue Exception=>e
+      return
+    end
 
-  	pc = {}
-  	hash_main = {}
-  	hash_os = {}
-  	hash_cpu = {}
-  	hash_memory = {}
-  	hash_disk = {}
-  	hash_screen = {}
-  	hash_keyboard = {}
-  	hash_network = {}
-  	hash_graphics = {}
+    pc = {}
+    hash_main = {}
+    hash_os = {}
+    hash_cpu = {}
+    hash_memory = {}
+    hash_disk = {}
+    hash_screen = {}
+    hash_keyboard = {}
+    hash_network = {}
+    hash_graphics = {}
 
-  	page.search('table#productParametersList tr.odd').each do |x|
-  		hash_main[x.search('td.productParameter').text.gsub(/\s+/,' ').strip] = x.search('td.rowOdd').text.gsub(/\s+/,' ').strip
-  	end
-  	page.search('table#productParametersList tr.even').each do |x|
-  		hash_main[x.search('td.productParameter').text.gsub(/\s+/,' ').strip] = x.search('td.rowEven').text.gsub(/\s+/,' ').strip
-  	end
+    page.search('table.c-specs__table tr').each do |x|
+      hash_main[x.search('td.label').text.gsub(/\s+/,' ').strip] = x.search('td.value').text.gsub(/\s+/,' ').strip
+    end
 
-  	pc[:url] = url
-  	pc[:price] = page.search('span.price.sale').text.gsub(/[[:space:]]/, '').to_f
-  	pc[:model] = page.search('span.fn.designation_courte').text
-  	pc[:brand] = extract_from_hash(hash_main, "Marque")
-  	pc[:model] = extract_from_hash(hash_main, "Modèle")
+    pc[:url] = url
+    pc[:price] = page.search('.o-product__price').text.gsub(/[[:space:]]/, '').to_f
+    pc[:model] = page.at('.col-12.col-md-9 h1').text
+    pc[:brand] = page.at(".d-none.d-md-block.col-md-3 a")[:href].match(/\/marque\/(.*?)\//)[1] rescue nil
 
 
     # Informations sur le système d'exploitation
     hash_os[:os_name] = extract_from_hash(hash_main, "Famille OS")
     hash_os[:os_family] = extract_from_hash(hash_main, "Système d'exploitation")
     hash_os[:os_included] = extract_from_hash(hash_main, "Système d'exploitation fourni") == "Oui" ? true : false
-    
+
 
     # Informations sur le processeur
     hash_cpu[:cpu_name] = extract_from_hash(hash_main, "Type de processeur")
     hash_cpu[:cpu_model] = extract_from_hash(hash_main, "Processeur")
     hash_cpu[:cpu_brand] = extract_from_hash(hash_main, "Marque processeur")
-    hash_cpu[:cpu_frequency] = extract_from_hash(hash_main, "Fréquence CPU")  
+    hash_cpu[:cpu_frequency] = extract_from_hash(hash_main, "Fréquence CPU")
 
 
     # Informations sur la mémoire
-    hash_memory[:memory_strips] = extract_from_hash(hash_main, "Nombre de barrettes")
     hash_memory[:memory_size] = extract_from_hash(hash_main, "Taille de la mémoire")
     hash_memory[:memory_max_size] = extract_from_hash(hash_main, "Taille de mémoire Max")
     hash_memory[:memory_type] = extract_from_hash(hash_main, "Type de mémoire")
@@ -102,10 +95,6 @@ end
     hash_keyboard[:keyboard_light] = extract_from_hash(hash_main, "Clavier rétroéclairé") == "Oui" ? true : false
 
 
-    # Informations sur la carte réseau
-    hash_network[:network_norm] = extract_from_hash(hash_main, "Norme(s) réseau")
-
-
     # Informations sur la carte graphique
     hash_graphics[:gpu_name] = extract_from_hash(hash_main, "Chipset graphique")
 
@@ -118,29 +107,30 @@ end
     pc[:disk] = hash_disk
     pc[:screen] = hash_screen
     pc[:keyboard] = hash_keyboard
-    pc[:network] = hash_network
+    pc[:network] = extract_from_hash(hash_main, 'Norme(s) réseau')
     pc[:gpu] = hash_graphics
     pc[:webcam] = (extract_from_hash(hash_main, "Webcam").match(/oui/i) ? true : false) rescue nil
-    pc[:main_photo] = page.search('div#productphoto a').first[:href] rescue nil
+    pc[:main_photo] = page.search('div.c-product__thumb img').first[:src] rescue nil
+    pc[:connector_available] = extract_from_hash(hash_main, 'Connecteur(s) disponible(s)')
 
     pc[:weight] = (extract_from_hash(hash_main, "Poids").gsub(",",".").to_f) rescue nil
     pc[:width] = (extract_from_hash(hash_main, "Largeur").gsub(",",".").to_f) rescue nil
     pc[:length] = (extract_from_hash(hash_main, "Profondeur").gsub(",",".").to_f) rescue nil
     pc[:height] = (extract_from_hash(hash_main, "Epaisseur Arrière").gsub(",",".").to_f) rescue nil
-    
+
     # Objet final pour le Computer
     Computer.insert_pc(pc, 5)
 
-end
+  end
 
 
   # Extraire une valeur d'un hash
   def self.extract_from_hash hash, key
-  	ret_value = ''
-  	if key.size > 0 && hash[key]
-  		ret_value = hash[key]
-  		hash.delete(key)
-  		return ret_value
-  	end
+    ret_value = ''
+    if key.size > 0 && hash[key]
+      ret_value = hash[key]
+      hash.delete(key)
+      return ret_value
+    end
   end
 end
